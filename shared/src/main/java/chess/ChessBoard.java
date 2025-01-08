@@ -39,5 +39,7 @@ public class ChessBoard {
      */
     public void resetBoard() {
         throw new RuntimeException("Not implemented");
+        //for space on board
+            //add null to space
     }
 }
