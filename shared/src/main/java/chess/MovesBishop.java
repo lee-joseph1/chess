@@ -1,6 +1,6 @@
 package chess;
 
-public class BishopMoves {
+public class MovesBishop {
     //allow diagonals so
     //FROM starting space
     //EITHER:

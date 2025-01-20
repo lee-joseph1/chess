@@ -1,6 +1,6 @@
 package chess;
 
-public class QueenMoves {
+public class MovesQueen {
     //get valid bishop moves
     //get valid rook moves
     //compile list

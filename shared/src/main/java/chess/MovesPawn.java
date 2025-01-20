@@ -1,6 +1,6 @@
 package chess;
 
-public class PawnMoves {
+public class MovesPawn {
     //get color
     //if color white and rank 2 OR color black and rank 7
         //can move 2

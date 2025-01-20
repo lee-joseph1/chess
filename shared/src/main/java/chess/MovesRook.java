@@ -1,6 +1,6 @@
 package chess;
 
-public class RookMoves {
+public class MovesRook {
     //allow laterals so
     //FROM starting space
     //EITHER:
