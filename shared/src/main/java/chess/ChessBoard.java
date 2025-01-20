@@ -9,7 +9,7 @@ package chess;
 public class ChessBoard {
 
     public ChessBoard() {
-        
+        //board = //array of pieces 8x8 remember move +-1 to account 0 indexing
     }
 
     /**

@@ -10,5 +10,5 @@ public class BishopMoves {
         //r-1 f-1 repeat (rf<=0)
     //run validity checks (all)
     //compile final list of valid moves
-    public static void int a = 1; //so I can commit my comments I think?
+    public static int a = 1; //so I can commit my comments I think?
 }
