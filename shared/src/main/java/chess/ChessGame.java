@@ -10,15 +10,22 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    public ChessGame() {
+    private TeamColor teamColor;
+    private ChessBoard board;
+    private boolean gameOver;
 
+    public ChessGame() {
+        board = new ChessBoard();
+        //setBoard(board);
+        setTeamTurn(TeamColor.WHITE);
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return teamColor;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -27,7 +34,8 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        teamColor = team;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -47,6 +55,7 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         throw new RuntimeException("Not implemented");
+        //get list of valid moves from the move calculator and validity checkers
     }
 
     /**
@@ -57,6 +66,9 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         throw new RuntimeException("Not implemented");
+        //check all valid moves
+            //if none, stalemate condition?
+        //make sure its the right color for the turn, valid move
     }
 
     /**
@@ -96,7 +108,8 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -105,6 +118,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
+        //throw new RuntimeException("Not implemented");
     }
 }
