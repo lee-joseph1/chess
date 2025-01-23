@@ -41,4 +41,15 @@ public class MoveCalculator {
             attemptCol += dc;
         }
     }
+
+    public static ChessMove kingNight (ChessBoard board, ChessPosition pos, int targR, int targC){
+        if (isOnBoard(new ChessPosition(targR, targC))) {
+            ChessPosition targPos = new ChessPosition(targR, targC);
+            ChessPiece targPiece = board.getPiece(targPos);
+            if (targPiece == null || !ontoFriendlyPiece(targPos, board, board.getPiece(pos))) {
+                return new ChessMove(pos, targPos, null);
+            }
+        }
+        return null;
+    }
 }

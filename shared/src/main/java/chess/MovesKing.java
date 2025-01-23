@@ -15,13 +15,15 @@ public class MovesKing extends MoveCalculator{
             for (int dc = -1; dc <=1; dc++) {
                 if (dr == 0 && dc == 0) continue;
                 int targC = pos.getColumn() + dc;
-                if (isOnBoard(new ChessPosition(targR, targC))) {
-                    ChessPosition targPos = new ChessPosition(targR, targC);
-                    ChessPiece targPiece = board.getPiece(targPos);
-                    if (targPiece == null || !ontoFriendlyPiece(targPos, board, board.getPiece(pos))) {
-                        moves.add(new ChessMove(pos, targPos, null));
-                    }
-                }
+//                if (isOnBoard(new ChessPosition(targR, targC))) {
+//                    ChessPosition targPos = new ChessPosition(targR, targC);
+//                    ChessPiece targPiece = board.getPiece(targPos);
+//                    if (targPiece == null || !ontoFriendlyPiece(targPos, board, board.getPiece(pos))) {
+//                        moves.add(new ChessMove(pos, targPos, null));
+//                    }
+//                }
+                ChessMove ret = kingNight(board, pos, targR, targC);
+                if (ret != null) moves.add(ret);
             }
         }
         return moves;
