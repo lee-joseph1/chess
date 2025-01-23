@@ -23,9 +23,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        board[position.getColumn() - 1][position.getRow() - 1] = piece;
-        //REMEMBER COL BEFORE ROW i.e. (k)night h3 file h rank 3
-        //REMEMBER INDEXING FROM 0 so add pieces from 1-8
+        board[position.getRow() - 1][position.getColumn() - 1] = piece;
         //throw new RuntimeException("Not implemented");
     }
 
@@ -37,7 +35,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return board[position.getColumn() - 1][position.getRow() - 1];
+        return board[position.getRow() - 1][position.getColumn() - 1];
         //throw new RuntimeException("Not implemented");
     }
 
@@ -80,25 +78,11 @@ public class ChessBoard {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return Arrays.deepEquals(this.board, ((ChessBoard) obj).board);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int row = 7; row > 0; row--) {
-            sb.append("|");
-            for (int col = 0; col < 8; col++) {
-                sb.append(board[row][col]);
-                sb.append("|");
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
+        return Arrays.deepEquals(board, ((ChessBoard) obj).board);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(this.board);
+        return Arrays.deepHashCode(board);
     }
 }
