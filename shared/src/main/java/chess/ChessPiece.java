@@ -58,8 +58,9 @@ public class ChessPiece {
         //throw new RuntimeException("Not implemented");
         //switch cases when each move calculator completed
         return switch (type){
-            case KING, QUEEN, KNIGHT, ROOK, PAWN -> null;
+            case KING, QUEEN, KNIGHT, PAWN -> null;
             case BISHOP -> MovesBishop.getMoves(board, myPosition);
+            case ROOK -> MovesRook.getMoves(board, myPosition);
         };
     }
 
