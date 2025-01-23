@@ -14,7 +14,7 @@ public class ChessPiece {
     private final ChessGame.TeamColor color;
     private final PieceType type;
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.color = pieceColor;
         this.type = type;
     }
@@ -55,8 +55,12 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        //throw new RuntimeException("Not implemented");
         //switch cases when each move calculator completed
+        return switch (type){
+            case KING, QUEEN, KNIGHT, ROOK, PAWN -> null;
+            case BISHOP -> MovesBishop.getMoves(board, myPosition);
+        };
     }
 
     @Override
