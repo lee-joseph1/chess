@@ -1,12 +1,6 @@
 package chess;
 
-import chess.ChessBoard;
-import chess.ChessPiece;
-import chess.ChessMove;
-import chess.ChessPosition;
-
 import java.util.Collection;
-import java.util.List;
 import java.util.ArrayList;
 
 public class MoveCalculator {
