@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.Collection;
-import java.util.ArrayList;
 
 public class MoveCalculator {
     public static boolean isOnBoard(ChessPosition pos) {
@@ -13,12 +12,6 @@ public class MoveCalculator {
     public static boolean ontoEnemyPiece(final ChessPosition pos, final ChessBoard board, final ChessPiece piece) {
         ChessPiece target = board.getPiece(pos);
         return target.getTeamColor() != piece.getTeamColor();
-    }
-
-    public static Collection<ChessMove> getMoves(ChessPosition pos, ChessPiece.PieceType type) {
-        Collection<ChessMove> moves = new ArrayList<>();
-        moves.add(new ChessMove(pos, pos, type));
-        return moves;
     }
 
     public static void addLinear(ChessBoard board, Collection<ChessMove> moves,
