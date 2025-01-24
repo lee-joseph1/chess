@@ -31,7 +31,7 @@ public class MovesBishop extends MoveCalculator {
 //            if (board.getPiece(attemptPos) == null) {
 //                moves.add(new ChessMove(pos, attemptPos, null));
 //            } //if empty, valid
-//            else if (!ontoFriendlyPiece(attemptPos, board, piece)) {
+//            else if (!ontoEnemyPiece(attemptPos, board, piece)) {
 //                moves.add(new ChessMove(pos, attemptPos, null));
 //                break;
 //            } //if enemy piece, can take, but can't move through

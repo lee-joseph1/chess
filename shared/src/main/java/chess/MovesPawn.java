@@ -42,7 +42,7 @@ public class MovesPawn extends MoveCalculator{
 
     public static void addCapture(Collection<ChessMove> moves, ChessBoard board, ChessPosition pos,
                                   ChessPosition target) {
-        if (isOnBoard(target) && board.getPiece(target) != null && !ontoFriendlyPiece(target, board, board.getPiece(pos))) {
+        if (isOnBoard(target) && board.getPiece(target) != null && ontoEnemyPiece(target, board, board.getPiece(pos))) {
                 addMove(moves, pos, target);
         }
     }

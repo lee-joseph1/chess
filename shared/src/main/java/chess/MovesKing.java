@@ -9,7 +9,7 @@ public class MovesKing extends MoveCalculator{
     //remember that moving into check is handled by CheckIntoCheck class
     //compile final list
     public static Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos) {
-        Collection<ChessMove> moves = new ArrayList<ChessMove>();
+        Collection<ChessMove> moves = new ArrayList<>();
         for (int dr = -1; dr <=1; dr++) {
             int targR = pos.getRow() + dr;
             for (int dc = -1; dc <=1; dc++) {
@@ -18,7 +18,7 @@ public class MovesKing extends MoveCalculator{
 //                if (isOnBoard(new ChessPosition(targR, targC))) {
 //                    ChessPosition targPos = new ChessPosition(targR, targC);
 //                    ChessPiece targPiece = board.getPiece(targPos);
-//                    if (targPiece == null || !ontoFriendlyPiece(targPos, board, board.getPiece(pos))) {
+//                    if (targPiece == null || !ontoEnemyPiece(targPos, board, board.getPiece(pos))) {
 //                        moves.add(new ChessMove(pos, targPos, null));
 //                    }
 //                }

@@ -10,16 +10,16 @@ public class MoveCalculator {
         return row > 0 && row <= 8 && col > 0 && col <= 8;
     }
 
-    public static boolean ontoFriendlyPiece(final ChessPosition pos, final ChessBoard board, final ChessPiece piece) {
+    public static boolean ontoEnemyPiece(final ChessPosition pos, final ChessBoard board, final ChessPiece piece) {
         ChessPiece target = board.getPiece(pos);
-        return piece != null && target.getTeamColor() == piece.getTeamColor();
+        return target.getTeamColor() != piece.getTeamColor();
     }
 
-    public static Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos, ChessPiece.PieceType type) {
+    public static Collection<ChessMove> getMoves(ChessPosition pos, ChessPiece.PieceType type) {
         Collection<ChessMove> moves = new ArrayList<>();
         moves.add(new ChessMove(pos, pos, type));
         return moves;
-    };
+    }
 
     public static void addLinear(ChessBoard board, Collection<ChessMove> moves,
                                    ChessPosition pos, ChessPiece piece, int dr, int dc) {//delta row, delta col
@@ -30,7 +30,7 @@ public class MoveCalculator {
             if (board.getPiece(attemptPos) == null) {
                 moves.add(new ChessMove(pos, attemptPos, null));
             } //if empty, valid
-            else if (!ontoFriendlyPiece(attemptPos, board, piece)) {
+            else if (ontoEnemyPiece(attemptPos, board, piece)) {
                 moves.add(new ChessMove(pos, attemptPos, null));
                 break;
             } //if enemy piece, can take, but can't move through
@@ -46,7 +46,7 @@ public class MoveCalculator {
         if (isOnBoard(new ChessPosition(targR, targC))) {
             ChessPosition targPos = new ChessPosition(targR, targC);
             ChessPiece targPiece = board.getPiece(targPos);
-            if (targPiece == null || !ontoFriendlyPiece(targPos, board, board.getPiece(pos))) {
+            if (targPiece == null || ontoEnemyPiece(targPos, board, board.getPiece(pos))) {
                 return new ChessMove(pos, targPos, null);
             }
         }

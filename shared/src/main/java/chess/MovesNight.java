@@ -12,7 +12,7 @@ public class MovesNight extends MoveCalculator{
     static List<Integer> longSide = Arrays.asList(-2, 2);
     static List<Integer> shortSide = Arrays.asList(-1, 1);
     public static Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos) {
-        Collection<ChessMove> moves = new ArrayList<ChessMove>();
+        Collection<ChessMove> moves = new ArrayList<>();
         for (int dr : longSide) {//assuming long move on row
             int targR = pos.getRow() + dr;
             for (int dc : shortSide) {
