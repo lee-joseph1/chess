@@ -1,21 +1,49 @@
 package chess;
 
-public class MovesPawn {
-    //get color
-    //if color white and rank 2 OR color black and rank 7
-        //can move 2
-        //if moves 2
-            //set check en passant condition
-    //if color white and rank 5 and en passant condition is active
-    //OR color black and rank 4 ...
-        //can en passant (assuming file +/- 1)
-    //if white and rank 7 or black and rank 2
-        //if moves to rank 8/1 call promote
-    //else base move
-    //can move forward one
-    //can attack diagonally
-    //check putting into check
-    //check valid move forward
-    //check valid attacks
-    // add all potential moves to a list if validity checks pass
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class MovesPawn extends MoveCalculator{
+    public static Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos/*, ChessPiece.PieceType type*/) {
+        Collection<ChessMove> moves = new ArrayList<>();
+        ChessPiece piece = board.getPiece(pos);
+        ChessGame.TeamColor color = piece.getTeamColor();
+        int dir = 1;
+        if (piece.getTeamColor().equals(ChessGame.TeamColor.BLACK)){
+            dir = -1;
+        }
+        ChessPosition target = new ChessPosition(pos.getRow() + dir, pos.getColumn());
+        if (isOnBoard(target) && board.getPiece(target) == null) {
+            addMove(moves, board, pos, target);
+            if ((color.equals(ChessGame.TeamColor.BLACK) && pos.getRow() == 7) ||
+                    (color.equals(ChessGame.TeamColor.WHITE) && pos.getRow() == 2)) {
+                ChessPosition targ2 = new ChessPosition(pos.getRow() + 2 * dir, pos.getColumn());
+                if (board.getPiece(targ2) == null) {
+                    addMove(moves, board, pos, targ2);
+                }
+            }
+        }
+        addCapture(moves, board, pos, new ChessPosition(pos.getRow() + dir, pos.getColumn() + 1));
+        addCapture(moves, board, pos, new ChessPosition(pos.getRow() + dir, pos.getColumn() - 1));
+        return moves;
+    }
+
+    public static void addMove(Collection<ChessMove> moves, ChessBoard board, ChessPosition pos,
+                               ChessPosition target) {
+        if (target.getRow() == 1 || target.getRow() == 8) {
+            moves.add(new ChessMove(pos, target, ChessPiece.PieceType.QUEEN));
+            moves.add(new ChessMove(pos, target, ChessPiece.PieceType.ROOK));
+            moves.add(new ChessMove(pos, target, ChessPiece.PieceType.BISHOP));
+            moves.add(new ChessMove(pos, target, ChessPiece.PieceType.KNIGHT));
+        } else {
+            moves.add(new ChessMove(pos, target, null));
+        }
+    }
+
+    public static void addCapture(Collection<ChessMove> moves, ChessBoard board, ChessPosition pos,
+                                  ChessPosition target) {
+        if (isOnBoard(target) && board.getPiece(target) != null && !ontoFriendlyPiece(target, board, board.getPiece(pos))) {
+                addMove(moves, board, pos, target);
+        }
+    }
 }
