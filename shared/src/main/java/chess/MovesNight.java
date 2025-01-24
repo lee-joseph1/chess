@@ -13,22 +13,19 @@ public class MovesNight extends MoveCalculator{
     static List<Integer> shortSide = Arrays.asList(-1, 1);
     public static Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos) {
         Collection<ChessMove> moves = new ArrayList<>();
-        for (int dr : longSide) {//assuming long move on row
-            int targR = pos.getRow() + dr;
-            for (int dc : shortSide) {
-                int targC = pos.getColumn() + dc;
-                ChessMove ret = kingNight(board, pos, targR, targC);
-                if (ret != null) moves.add(ret);
-            }
-        }
-        for (int dr : shortSide) {//assuming long move on col
-            int targR = pos.getRow() + dr;
-            for (int dc : longSide) {
-                int targC = pos.getColumn() + dc;
-                ChessMove ret = kingNight(board, pos, targR, targC);
-                if (ret != null) moves.add(ret);
-            }
-        }
+        knightMoves(board, pos, moves, longSide, shortSide);
+        knightMoves(board, pos, moves, shortSide, longSide);
         return moves;
+    }
+
+    private static void knightMoves(ChessBoard board, ChessPosition pos, Collection<ChessMove> moves, List<Integer> longSide, List<Integer> shortSide) {
+        for (int dr : longSide) {//assuming long move on row
+            int targetR = pos.getRow() + dr;
+            for (int dc : shortSide) {
+                int targetC = pos.getColumn() + dc;
+                ChessMove ret = kingNight(board, pos, targetR, targetC);
+                if (ret != null) moves.add(ret);
+            }
+        }
     }
 }
