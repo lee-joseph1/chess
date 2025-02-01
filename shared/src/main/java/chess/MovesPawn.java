@@ -17,9 +17,9 @@ public class MovesPawn extends MoveCalculator{
             addMove(moves, pos, target);
             if ((color.equals(ChessGame.TeamColor.BLACK) && pos.getRow() == 7) ||
                     (color.equals(ChessGame.TeamColor.WHITE) && pos.getRow() == 2)) {
-                ChessPosition targ2 = new ChessPosition(pos.getRow() + 2 * dir, pos.getColumn());
-                if (board.getPiece(targ2) == null) {
-                    addMove(moves, pos, targ2);
+                ChessPosition target2 = new ChessPosition(pos.getRow() + 2 * dir, pos.getColumn());
+                if (board.getPiece(target2) == null) {
+                    addMove(moves, pos, target2);
                 }
             }
         }

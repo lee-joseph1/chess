@@ -47,7 +47,6 @@ public class ChessBoard {
         //throw new RuntimeException("Not implemented");
         //wipe board by creating a new one instead
         board = new ChessPiece[8][8];
-        //set pawns
         for (int col = 1; col <= 8; col++) {
             addPiece(new ChessPosition(2, col), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
             addPiece(new ChessPosition(7, col), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
