@@ -62,6 +62,9 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         throw new RuntimeException("Not implemented");
         //get list of valid moves from the move calculator and validity checkers
+        // ^^^^more like see if i even care about those files still lelelel smh my head i think im overcomplicating for myself
+        //pretend to remove the piece (as capturing would replace as a barrier) and see if in check
+        //think about if this holds true for en passant as well since the replaced piece is not in same position !!!!!
     }
 
     /**
