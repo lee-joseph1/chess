@@ -23,6 +23,11 @@ public class ChessGame {
         board = new ChessBoard();
         board.resetBoard();
         setTeamTurn(TeamColor.WHITE);
+        whiteCanCastleLong = true;
+        whiteCanCastleShort = true;
+        blackCanCastleLong = true;
+        blackCanCastleShort = true;
+        enPassant = false;
     }
 
     /**
