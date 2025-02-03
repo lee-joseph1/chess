@@ -66,19 +66,13 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //throw new RuntimeException("Not implemented");
         //get list of valid moves from the move calculator and validity checkers
-        // ^^^^more like see if i even care about those files still lelelel smh my head i think im overcomplicating for myself
+        // ^^^^more like see if I even care about those files still lelelel smh my head I think im overcomplicating for myself
         //pretend to remove the piece (as capturing would replace as a barrier) and see if in check
         //think about if this holds true for en passant as well since the replaced piece is not in same position !!!!!
         Collection<ChessMove> moves = new ArrayList<>();
         ChessPiece piece = board.getPiece(startPosition);
         ChessGame.TeamColor teamColor = piece.getTeamColor();
         for (ChessMove move : piece.pieceMoves(board, startPosition)) {
-//            ChessBoard saveBoard = board;
-//            if (board.getPiece(move.getEndPosition()) != null) {
-//                board.addPiece(move.getEndPosition(), null);
-//            }
-//            board.addPiece(move.getEndPosition(), piece);
-//            board.addPiece(move.getStartPosition(), null);
             ChessPiece savePiece = board.getPiece(move.getEndPosition());
             board.addPiece(move.getEndPosition(), piece);
             board.addPiece(move.getStartPosition(), null);
@@ -101,7 +95,7 @@ public class ChessGame {
         //throw new RuntimeException("Not implemented");
         //check all valid moves
             //if none, stalemate condition?
-        //make sure its the right color for the turn, valid move
+        //make sure it's the right color for the turn, valid move
         //!!!!also check for promotion from the move
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
@@ -196,7 +190,7 @@ public class ChessGame {
         //if valid moves empty, inCHeck false
         //here its defined where in check doesn't matter
         //since valid moves is position dependent just iterate over all pieces for
-        //that color & if we find one valid move then its a nah
+        //that color & if we find one valid move then it's a nah
         //haha nvm check is important so moved it to a new method
         return !isInCheck(teamColor) && stalemateCondition(teamColor);
     }
