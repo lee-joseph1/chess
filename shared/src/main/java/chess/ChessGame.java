@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -60,11 +61,34 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        //throw new RuntimeException("Not implemented");
         //get list of valid moves from the move calculator and validity checkers
         // ^^^^more like see if i even care about those files still lelelel smh my head i think im overcomplicating for myself
         //pretend to remove the piece (as capturing would replace as a barrier) and see if in check
         //think about if this holds true for en passant as well since the replaced piece is not in same position !!!!!
+        Collection<ChessMove> moves = new ArrayList<>();
+        ChessGame.TeamColor teamColor = getTeamTurn();
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
+                ChessPiece currentPiece = board.getPiece(new ChessPosition(row, col));
+                if (currentPiece != null && currentPiece.getTeamColor() == teamColor) {
+                    for (ChessMove move : currentPiece.pieceMoves(board, new ChessPosition(row, col))) {
+                        ChessBoard saveBoard = board;
+                        if (board.getPiece(move.getEndPosition()) != null) {
+                            ChessPiece target = board.getPiece(move.getEndPosition());
+                            target = null;
+                        }
+                        board.addPiece(move.getEndPosition(), currentPiece);
+                        currentPiece = null;
+                        if (!isInCheck(teamColor)) {
+                            moves.add(move);
+                        }
+                        board = saveBoard;
+                    }
+                }
+            }
+        }
+        return moves;
     }
 
     /**
@@ -74,10 +98,30 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        //throw new RuntimeException("Not implemented");
         //check all valid moves
             //if none, stalemate condition?
         //make sure its the right color for the turn, valid move
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece piece = board.getPiece(start);
+        if (validMoves(start).contains(move)) {
+            if (board.getPiece(end) != null) {
+                ChessPiece target = board.getPiece(end);
+                target = null;
+            }
+            board.addPiece(end, piece);
+            piece = null;
+            if (teamTurn == TeamColor.BLACK) {
+                teamTurn = TeamColor.WHITE;
+            }
+            else {
+                teamTurn = TeamColor.BLACK;
+            }
+        }
+        else {
+            throw new InvalidMoveException();
+        }
     }
 
     /**
@@ -91,10 +135,11 @@ public class ChessGame {
         ChessPosition kingPos = findKing(teamColor);
         for (int row = 1; row < 9; row++) {
             for (int col = 1; col < 9; col++) {
-                ChessPiece currentPiece = board.getPiece(new ChessPosition(row, col));
+                ChessPosition currentPosition = new ChessPosition(row, col);
+                ChessPiece currentPiece = board.getPiece(currentPosition);
                 if (currentPiece != null && currentPiece.getTeamColor() != teamColor) {
-                    for (ChessMove threats : currentPiece.pieceMoves(board, new ChessPosition(row, col))) {
-                        if (threats.getEndPosition().equals(kingPos)) {
+                    for (ChessMove threat : currentPiece.pieceMoves(board, currentPosition)) {
+                        if (threat.getEndPosition().equals(kingPos)) {
                             return true;
                         }
                     }
