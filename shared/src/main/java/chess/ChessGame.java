@@ -117,10 +117,36 @@ public class ChessGame {
             else {
                 teamTurn = TeamColor.BLACK;
             }
+            updateEnPassant(move);
+            updateCastling(move);
         }
         else {
             throw new InvalidMoveException();
         }
+    }
+
+    public void updateEnPassant(ChessMove move) {
+        //if just moved two squares set to true
+        //else set to false
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            if (start.getRow() - end.getRow() == 2 || start.getRow() - end.getRow() == -2) {
+                enPassant = true;
+            }
+            else {
+                enPassant = false;
+            }
+        }
+        else {
+            enPassant = false;
+        }
+    }
+    public void updateCastling(ChessMove move) {
+        //if moving rook set false for that side
+        //if moving king set false (will move king for initial castle move)
+        //will need serious refactoring of things I think
     }
 
     /**
