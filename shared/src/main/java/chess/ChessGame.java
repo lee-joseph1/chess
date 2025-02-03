@@ -67,26 +67,23 @@ public class ChessGame {
         //pretend to remove the piece (as capturing would replace as a barrier) and see if in check
         //think about if this holds true for en passant as well since the replaced piece is not in same position !!!!!
         Collection<ChessMove> moves = new ArrayList<>();
-        ChessGame.TeamColor teamColor = getTeamTurn();
-        for (int row = 1; row < 9; row++) {
-            for (int col = 1; col < 9; col++) {
-                ChessPiece currentPiece = board.getPiece(new ChessPosition(row, col));
-                if (currentPiece != null && currentPiece.getTeamColor() == teamColor) {
-                    for (ChessMove move : currentPiece.pieceMoves(board, new ChessPosition(row, col))) {
-                        ChessBoard saveBoard = board;
-                        if (board.getPiece(move.getEndPosition()) != null) {
-                            ChessPiece target = board.getPiece(move.getEndPosition());
-                            target = null;
-                        }
-                        board.addPiece(move.getEndPosition(), currentPiece);
-                        currentPiece = null;
-                        if (!isInCheck(teamColor)) {
-                            moves.add(move);
-                        }
-                        board = saveBoard;
-                    }
-                }
+        ChessPiece piece = board.getPiece(startPosition);
+        ChessGame.TeamColor teamColor = piece.getTeamColor();
+        for (ChessMove move : piece.pieceMoves(board, startPosition)) {
+//            ChessBoard saveBoard = board;
+//            if (board.getPiece(move.getEndPosition()) != null) {
+//                board.addPiece(move.getEndPosition(), null);
+//            }
+//            board.addPiece(move.getEndPosition(), piece);
+//            board.addPiece(move.getStartPosition(), null);
+            ChessPiece savePiece = board.getPiece(move.getEndPosition());
+            board.addPiece(move.getEndPosition(), piece);
+            board.addPiece(move.getStartPosition(), null);
+            if (!isInCheck(teamColor)) {
+                moves.add(move);
             }
+            board.addPiece(move.getStartPosition(), piece);
+            board.addPiece(move.getEndPosition(), savePiece);
         }
         return moves;
     }
