@@ -171,8 +171,10 @@ public class ChessGame {
         //if in check
         //try every possible move for your team (getValidMoves)
         //if no valid moves, set gameOver true, return true
+        // umm these are literally just the check + stalemate conditions?? so yeah
         //return false;
-        throw new RuntimeException("Not implemented");
+        return stalemateCondition(teamColor) && isInCheck(teamColor);
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -183,8 +185,27 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //throw new RuntimeException("Not implemented");
         //if valid moves empty, inCHeck false
+        //here its defined where in check doesn't matter
+        //since valid moves is position dependent just iterate over all pieces for
+        //that color & if we find one valid move then its a nah
+        //haha nvm check is important so moved it to a new method
+        return !isInCheck(teamColor) && stalemateCondition(teamColor);
+    }
+
+    public boolean stalemateCondition(TeamColor teamColor) {
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                if (board.getPiece(pos)  != null && board.getPiece(pos).getTeamColor() == teamColor) {
+                    if (!validMoves(pos).isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
