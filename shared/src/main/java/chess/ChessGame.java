@@ -102,6 +102,7 @@ public class ChessGame {
         //check all valid moves
             //if none, stalemate condition?
         //make sure its the right color for the turn, valid move
+        //!!!!also check for promotion from the move
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece piece = board.getPiece(start);
