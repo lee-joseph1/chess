@@ -13,7 +13,6 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board;
-    private final boolean gameOver;
     private boolean whiteCanCastleLong;
     private boolean blackCanCastleLong;
     private boolean whiteCanCastleShort;
@@ -24,7 +23,6 @@ public class ChessGame {
         board = new ChessBoard();
         board.resetBoard();
         setTeamTurn(TeamColor.WHITE);
-        gameOver = false;
     }
 
     /**
@@ -103,13 +101,17 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece piece = board.getPiece(start);
-        if (validMoves(start).contains(move)) {
-            if (board.getPiece(end) != null) {
-                ChessPiece target = board.getPiece(end);
-                target = null;
+        if (piece == null) {
+            throw new InvalidMoveException();
+        }
+        if (validMoves(start).contains(move) && piece.getTeamColor() == teamTurn) {
+            board.addPiece(start, null);
+            if (move.getPromotionPiece() != null) {
+                board.addPiece(end, new ChessPiece(teamTurn, move.getPromotionPiece()));
             }
-            board.addPiece(end, piece);
-            piece = null;
+            else {
+                board.addPiece(end, piece);
+            }
             if (teamTurn == TeamColor.BLACK) {
                 teamTurn = TeamColor.WHITE;
             }
