@@ -84,4 +84,23 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(board);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < 8; row++) {
+            for (int col = 7; col >= 0; col--) {
+                if (board[row][col] != null) {
+                    sb.append(board[row][col].toString());
+                    sb.append("|");
+                }
+                else {
+                    sb.append(" ");
+                    sb.append("|");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 }

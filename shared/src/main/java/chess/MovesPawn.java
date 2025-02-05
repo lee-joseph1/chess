@@ -28,12 +28,18 @@ public class MovesPawn extends MoveCalculator{
         }
         addCapture(moves, board, pos, new ChessPosition(pos.getRow() + dir, pos.getColumn() + 1));
         addCapture(moves, board, pos, new ChessPosition(pos.getRow() + dir, pos.getColumn() - 1));
-        if (enPassant) {
-            ChessPosition target3 = new ChessPosition(enPassantSquare.getRow() + dir, enPassantSquare.getColumn());
-            if (board.getPiece(target3) == null) {
-                moves.add(new ChessMove(pos, target3, null));
+        if (enPassant && enPassantSquare != null) {
+            System.out.print(pos);
+            System.out.print(enPassantSquare);
+            if (pos.getRow() == enPassantSquare.getRow() && (pos.getColumn() == enPassantSquare.getColumn() + 1 ||
+                    pos.getColumn() == enPassantSquare.getColumn() - 1)) {
+                ChessPosition target3 = new ChessPosition(enPassantSquare.getRow() + dir, enPassantSquare.getColumn());
+                if (board.getPiece(target3) == null) {
+                    moves.add(new ChessMove(pos, target3, null));
+                }
             }
         }
+        System.out.print(moves);
         return moves;
     }
 

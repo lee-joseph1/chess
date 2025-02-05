@@ -76,7 +76,7 @@ public class ChessGame {
         for (ChessMove move : piece.pieceMoves(board, startPosition)) {
             ChessPosition start = move.getStartPosition();
             ChessPosition end = move.getEndPosition();
-            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && end.getColumn() != start.getColumn()
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && enPassant && end.equals(enPassantSquare)
                     && board.getPiece(end) == null) {
                 board.addPiece(end, piece);
                 ChessPosition capture = new ChessPosition(start.getRow(), end.getColumn());
@@ -124,7 +124,7 @@ public class ChessGame {
         }
         if (validMoves(start).contains(move) && piece.getTeamColor() == teamTurn) {
             board.addPiece(start, null);
-            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && end.getColumn() != start.getColumn()
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && enPassant
                     && board.getPiece(end) == null) {
                 board.addPiece(end, piece);
                 ChessPosition capture = new ChessPosition(start.getRow(), end.getColumn());
@@ -143,7 +143,7 @@ public class ChessGame {
             else {
                 teamTurn = TeamColor.BLACK;
             }
-            updateEnPassant(move);
+            updateEnPassant(move, piece);
             updateCastling(move);
         }
         else {
@@ -151,23 +151,25 @@ public class ChessGame {
         }
     }
 
-    public void updateEnPassant(ChessMove move) {
+    public void updateEnPassant(ChessMove move, ChessPiece piece) {
         //if just moved two squares set to true
         //else set to false
-        ChessPiece piece = board.getPiece(move.getStartPosition());
+        //ChessPiece piece = board.getPiece(move.getStartPosition());
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
-        if (piece != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            if (start.getRow() - end.getRow() == 2 || start.getRow() - end.getRow() == -2) {
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            if (Math.abs(start.getRow() - end.getRow()) == 2) {
                 enPassant = true;
-                enPassantSquare = move.getEndPosition();
+                enPassantSquare = end;
             }
             else {
                 enPassant = false;
+                enPassantSquare = null;
             }
         }
         else {
             enPassant = false;
+            enPassantSquare = null;
         }
     }
     public void updateCastling(ChessMove move) {
