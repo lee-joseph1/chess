@@ -144,7 +144,7 @@ public class ChessGame {
                 teamTurn = TeamColor.BLACK;
             }
             updateEnPassant(move, piece);
-            updateCastling(move);
+            updateCastling(move, piece);
         }
         else {
             throw new InvalidMoveException();
@@ -172,10 +172,40 @@ public class ChessGame {
             enPassantSquare = null;
         }
     }
-    public void updateCastling(ChessMove move) {
+    public void updateCastling(ChessMove move, ChessPiece piece) {
         //if moving rook set false for that side
         //if moving king set false (will move king for initial castle move)
         //will need serious refactoring of things I think
+        ChessPosition start = move.getStartPosition();
+        ChessGame.TeamColor color = piece.getTeamColor();
+        if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+            if (start.getColumn() == 8) {
+                if (color == TeamColor.WHITE) {
+                    whiteCanCastleShort = false;
+                }
+                else {
+                    blackCanCastleShort = false;
+                }
+            }
+            if (start.getColumn() == 1) {
+                if (color == TeamColor.WHITE) {
+                    whiteCanCastleLong = false;
+                }
+                else {
+                    blackCanCastleLong = false;
+                }
+            }
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (color == TeamColor.WHITE) {
+                whiteCanCastleLong = false;
+                whiteCanCastleShort = false;
+            }
+            else {
+                blackCanCastleLong = false;
+                blackCanCastleShort = false;
+            }
+        }
     }
 
     /**
