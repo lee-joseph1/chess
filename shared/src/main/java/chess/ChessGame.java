@@ -13,11 +13,12 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board;
-    private boolean whiteCanCastleLong;
-    private boolean blackCanCastleLong;
-    private boolean whiteCanCastleShort;
-    private boolean blackCanCastleShort;
-    private boolean enPassant;
+    public boolean whiteCanCastleLong;
+    public boolean blackCanCastleLong;
+    public boolean whiteCanCastleShort;
+    public boolean blackCanCastleShort;
+    public static boolean enPassant;
+    public static ChessPosition enPassantSquare;
 
     public ChessGame() {
         board = new ChessBoard();
@@ -73,14 +74,32 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(startPosition);
         ChessGame.TeamColor teamColor = piece.getTeamColor();
         for (ChessMove move : piece.pieceMoves(board, startPosition)) {
-            ChessPiece savePiece = board.getPiece(move.getEndPosition());
-            board.addPiece(move.getEndPosition(), piece);
-            board.addPiece(move.getStartPosition(), null);
-            if (!isInCheck(teamColor)) {
-                moves.add(move);
+            ChessPosition start = move.getStartPosition();
+            ChessPosition end = move.getEndPosition();
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && end.getColumn() != start.getColumn()
+                    && board.getPiece(end) == null) {
+                board.addPiece(end, piece);
+                ChessPosition capture = new ChessPosition(start.getRow(), end.getColumn());
+                ChessPiece savePiece = board.getPiece(capture);
+                board.addPiece(capture, null);
+                board.addPiece(start, null);
+                if (!isInCheck(teamColor)) {
+                    moves.add(move);
+                }
+                board.addPiece(move.getStartPosition(), piece);
+                board.addPiece(capture, savePiece);
+                board.addPiece(move.getEndPosition(), null);
             }
-            board.addPiece(move.getStartPosition(), piece);
-            board.addPiece(move.getEndPosition(), savePiece);
+            else {
+                ChessPiece savePiece = board.getPiece(move.getEndPosition());
+                board.addPiece(move.getEndPosition(), piece);
+                board.addPiece(move.getStartPosition(), null);
+                if (!isInCheck(teamColor)) {
+                    moves.add(move);
+                }
+                board.addPiece(move.getStartPosition(), piece);
+                board.addPiece(move.getEndPosition(), savePiece);
+            }
         }
         return moves;
     }
@@ -105,7 +124,14 @@ public class ChessGame {
         }
         if (validMoves(start).contains(move) && piece.getTeamColor() == teamTurn) {
             board.addPiece(start, null);
-            if (move.getPromotionPiece() != null) {
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && end.getColumn() != start.getColumn()
+                    && board.getPiece(end) == null) {
+                board.addPiece(end, piece);
+                ChessPosition capture = new ChessPosition(start.getRow(), end.getColumn());
+                board.addPiece(capture, null);
+                board.addPiece(start, null);
+            }
+            else if (move.getPromotionPiece() != null) {
                 board.addPiece(end, new ChessPiece(teamTurn, move.getPromotionPiece()));
             }
             else {
@@ -131,9 +157,10 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(move.getStartPosition());
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
-        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+        if (piece != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
             if (start.getRow() - end.getRow() == 2 || start.getRow() - end.getRow() == -2) {
                 enPassant = true;
+                enPassantSquare = move.getEndPosition();
             }
             else {
                 enPassant = false;

@@ -3,6 +3,9 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static chess.ChessGame.enPassant;
+import static chess.ChessGame.enPassantSquare;
+
 public class MovesPawn extends MoveCalculator{
     public static Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos) {
         Collection<ChessMove> moves = new ArrayList<>();
@@ -25,6 +28,12 @@ public class MovesPawn extends MoveCalculator{
         }
         addCapture(moves, board, pos, new ChessPosition(pos.getRow() + dir, pos.getColumn() + 1));
         addCapture(moves, board, pos, new ChessPosition(pos.getRow() + dir, pos.getColumn() - 1));
+        if (enPassant) {
+            ChessPosition target3 = new ChessPosition(enPassantSquare.getRow() + dir, enPassantSquare.getColumn());
+            if (board.getPiece(target3) == null) {
+                moves.add(new ChessMove(pos, target3, null));
+            }
+        }
         return moves;
     }
 
