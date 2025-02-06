@@ -3,6 +3,11 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static chess.ChessGame.whiteCanCastleLong;
+import static chess.ChessGame.whiteCanCastleShort;
+import static chess.ChessGame.blackCanCastleLong;
+import static chess.ChessGame.blackCanCastleShort;
+
 public class MovesKing extends MoveCalculator{
     //allow any two r+-0,1, f+-0,1
     //run validity checks (all)
@@ -15,17 +20,26 @@ public class MovesKing extends MoveCalculator{
             for (int dc = -1; dc <=1; dc++) {
                 if (dr == 0 && dc == 0) continue;
                 int targC = pos.getColumn() + dc;
-//                if (isOnBoard(new ChessPosition(targR, targC))) {
-//                    ChessPosition targPos = new ChessPosition(targR, targC);
-//                    ChessPiece targPiece = board.getPiece(targPos);
-//                    if (targPiece == null || !ontoEnemyPiece(targPos, board, board.getPiece(pos))) {
-//                        moves.add(new ChessMove(pos, targPos, null));
-//                    }
-//                }
                 ChessMove ret = kingNight(board, pos, targR, targC);
                 if (ret != null) moves.add(ret);
             }
         }
+//        if (board.getPiece(pos).getTeamColor() == ChessGame.TeamColor.WHITE) {
+//            if (whiteCanCastleLong) {
+//                moves.add(new ChessMove(pos, new ChessPosition(1, 3), null));
+//            }
+//            if (whiteCanCastleShort) {
+//                moves.add(new ChessMove(pos, new ChessPosition(1, 7), null));
+//            }
+//        }
+//        else {
+//            if (blackCanCastleLong) {
+//                moves.add(new ChessMove(pos, new ChessPosition(8, 3), null));
+//            }
+//            if (blackCanCastleShort) {
+//                moves.add(new ChessMove(pos, new ChessPosition(8, 7), null));
+//            }
+//        }
         return moves;
     }
 }

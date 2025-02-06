@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -13,10 +14,10 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board;
-    public boolean whiteCanCastleLong;
-    public boolean blackCanCastleLong;
-    public boolean whiteCanCastleShort;
-    public boolean blackCanCastleShort;
+    public static boolean whiteCanCastleLong;
+    public static boolean blackCanCastleLong;
+    public static boolean whiteCanCastleShort;
+    public static boolean blackCanCastleShort;
     public static boolean enPassant;
     public static ChessPosition enPassantSquare;
 
@@ -29,6 +30,7 @@ public class ChessGame {
         blackCanCastleLong = true;
         blackCanCastleShort = true;
         enPassant = false;
+        checkCastlePresetBoard(board);
     }
 
     /**
@@ -72,28 +74,23 @@ public class ChessGame {
         //think about if this holds true for en passant as well since the replaced piece is not in same position !!!!!
         Collection<ChessMove> moves = new ArrayList<>();
         ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            return moves;
+        }
         ChessGame.TeamColor teamColor = piece.getTeamColor();
         for (ChessMove move : piece.pieceMoves(board, startPosition)) {
             ChessPosition start = move.getStartPosition();
             ChessPosition end = move.getEndPosition();
-            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && enPassant && end.equals(enPassantSquare)
-                    && board.getPiece(end) == null) {
-                board.addPiece(end, piece);
-                ChessPosition capture = new ChessPosition(start.getRow(), end.getColumn());
-                ChessPiece savePiece = board.getPiece(capture);
-                board.addPiece(capture, null);
-                board.addPiece(start, null);
-                if (!isInCheck(teamColor)) {
-                    moves.add(move);
-                }
-                board.addPiece(move.getStartPosition(), piece);
-                board.addPiece(capture, savePiece);
-                board.addPiece(move.getEndPosition(), null);
+            if (tryEnPassant(move)) {
+                moves.add(move);
+            }
+            else if (tryCastle(move)) {
+                moves.add(move);
             }
             else {
                 ChessPiece savePiece = board.getPiece(move.getEndPosition());
-                board.addPiece(move.getEndPosition(), piece);
-                board.addPiece(move.getStartPosition(), null);
+                board.addPiece(end, piece);
+                board.addPiece(start, null);
                 if (!isInCheck(teamColor)) {
                     moves.add(move);
                 }
@@ -101,8 +98,119 @@ public class ChessGame {
                 board.addPiece(move.getEndPosition(), savePiece);
             }
         }
+        System.out.print(moves);
         return moves;
     }
+
+    public boolean tryEnPassant(ChessMove move) {
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece piece = board.getPiece(start);
+        ChessGame.TeamColor teamColor = piece.getTeamColor();
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && enPassant && end.equals(enPassantSquare)
+                && board.getPiece(end) == null) {
+            board.addPiece(end, piece);
+            ChessPosition capture = new ChessPosition(start.getRow(), end.getColumn());
+            ChessPiece savePiece = board.getPiece(capture);
+            board.addPiece(capture, null);
+            board.addPiece(start, null);
+            if (!isInCheck(teamColor)) {
+                return true;
+            }
+            board.addPiece(move.getStartPosition(), piece);
+            board.addPiece(capture, savePiece);
+            board.addPiece(move.getEndPosition(), null);
+        }
+        return false;
+    }
+
+    public boolean tryCastle(ChessMove move) {
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece king = board.getPiece(start);
+        ChessGame.TeamColor teamColor = king.getTeamColor();
+        if (king.getPieceType() == ChessPiece.PieceType.KING && Math.abs(end.getColumn() - start.getColumn()) > 1) {
+            if (isInCheck(teamColor)) {
+                return false;
+            }
+            board.addPiece(start, null);//get rid of king
+            if (start.getRow() > end.getRow()) {//short
+                ChessPosition mid = new ChessPosition(start.getRow(), 6);
+                if (board.getPiece(mid) != null || board.getPiece(end) != null) {
+                    return false; //middle 2 spaces must be empty
+                }
+                board.addPiece(mid, king); //check moving through check
+                if (isInCheck(teamColor)) {
+                    return false;
+                }
+                board.addPiece(mid, null); //keep moving
+                board.addPiece(new ChessPosition(start.getRow(), 6), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                board.addPiece(new ChessPosition(start.getRow(), 8), null);
+                board.addPiece(end, king);
+                if (!isInCheck(teamColor)) {
+                    return true;
+                }
+                board.addPiece(new ChessPosition(start.getRow(), 6), null);
+                board.addPiece(new ChessPosition(start.getRow(), 8), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                board.addPiece(end, null);
+                board.addPiece(start, king);
+            }
+            else {//long
+                ChessPosition mid = new ChessPosition(start.getRow(), 4);
+                if (!(board.getPiece(mid) == null && board.getPiece(end) == null)) {
+                    return false;
+                }
+                board.addPiece(mid, king);
+                if (isInCheck(teamColor)) {
+                    return false;
+                }
+                board.addPiece(mid, null);
+                board.addPiece(new ChessPosition(start.getRow(), 4), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                board.addPiece(new ChessPosition(start.getRow(), 1), null);
+                board.addPiece(end, king);
+                if (!isInCheck(teamColor)) {
+                    return true;
+                }
+                board.addPiece(new ChessPosition(start.getRow(), 4), null);
+                board.addPiece(new ChessPosition(start.getRow(), 1), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                board.addPiece(end, null);
+                board.addPiece(start, king);
+            }
+        }
+        return false;
+    }
+
+    public void checkCastlePresetBoard(ChessBoard board) {
+        ChessPosition whiteKing = new ChessPosition(1, 5);
+        ChessPosition blackKing = new ChessPosition(8, 5);
+        ChessPosition whiteRook1 = new ChessPosition(1, 1);
+        ChessPosition blackRook1 = new ChessPosition(8, 1);
+        ChessPosition whiteRook8 = new ChessPosition(1, 8);
+        ChessPosition blackRook8 = new ChessPosition(8, 8);
+        if (!Objects.equals(board.getPiece(whiteKing), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.KING))) {
+            whiteCanCastleShort = false;
+            whiteCanCastleLong = false;
+        }
+        if (!Objects.equals(board.getPiece(blackKing), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.KING))) {
+            blackCanCastleShort = false;
+            blackCanCastleLong = false;
+        }
+        if (!Objects.equals(board.getPiece(whiteRook1), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.ROOK))) {
+            whiteCanCastleLong = false;
+        }
+        if (!Objects.equals(board.getPiece(whiteRook8), new ChessPiece(TeamColor.WHITE, ChessPiece.PieceType.ROOK))) {
+            whiteCanCastleShort = false;
+        }
+        if (!Objects.equals(board.getPiece(blackRook1), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.ROOK))) {
+            blackCanCastleLong = false;
+        }
+        if (!Objects.equals(board.getPiece(blackRook8), new ChessPiece(TeamColor.BLACK, ChessPiece.PieceType.ROOK))) {
+            blackCanCastleShort = false;
+        }
+    }
+
+    //simplify method to trymove, trypassant, trycastle
+    //consider using a copy constructor instead of savePiece
 
     /**
      * Makes a move in a chess game
@@ -131,6 +239,21 @@ public class ChessGame {
                 board.addPiece(capture, null);
                 board.addPiece(start, null);
             }
+//            else if (piece.getPieceType() == ChessPiece.PieceType.KING &&
+//                    Math.abs(end.getColumn() - start.getColumn()) > 1) {
+//                ChessGame.TeamColor teamColor = piece.getTeamColor();
+//                board.addPiece(start, null);
+//                if (start.getRow() > end.getRow()) {//short
+//                    board.addPiece(new ChessPosition(start.getRow(), 6), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+//                    board.addPiece(new ChessPosition(start.getRow(), 8), null);
+//                    board.addPiece(end, piece);
+//                }
+//                else {//long
+//                    board.addPiece(new ChessPosition(start.getRow(), 4), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+//                    board.addPiece(new ChessPosition(start.getRow(), 1), null);
+//                    board.addPiece(end, piece);
+//                }
+//            }
             else if (move.getPromotionPiece() != null) {
                 board.addPiece(end, new ChessPiece(teamTurn, move.getPromotionPiece()));
             }
@@ -150,6 +273,8 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
     }
+
+    //similar simplification
 
     public void updateEnPassant(ChessMove move, ChessPiece piece) {
         //if just moved two squares set to true
