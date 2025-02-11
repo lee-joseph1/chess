@@ -87,9 +87,10 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int row = 0; row < 8; row++) {
-            for (int col = 7; col >= 0; col--) {
+        StringBuilder sb = new StringBuilder("\n");
+        for (int row = 7; row >= 0; row--) {
+            sb.append("|");
+            for (int col = 0; col < 8; col++) {
                 if (board[row][col] != null) {
                     sb.append(board[row][col].toString());
                     sb.append("|");

@@ -15,31 +15,15 @@ public class MovesKing extends MoveCalculator{
     //compile final list
     public static Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos) {
         Collection<ChessMove> moves = new ArrayList<>();
-        for (int dr = -1; dr <=1; dr++) {
-            int targR = pos.getRow() + dr;
-            for (int dc = -1; dc <=1; dc++) {
+        for (int dr = -1; dr <= 1; dr++) {
+            int targetR = pos.getRow() + dr;
+            for (int dc = -1; dc <= 1; dc++) {
                 if (dr == 0 && dc == 0) continue;
-                int targC = pos.getColumn() + dc;
-                ChessMove ret = kingNight(board, pos, targR, targC);
+                int targetC = pos.getColumn() + dc;
+                ChessMove ret = kingNight(board, pos, targetR, targetC);
                 if (ret != null) moves.add(ret);
             }
         }
-//        if (board.getPiece(pos).getTeamColor() == ChessGame.TeamColor.WHITE) {
-//            if (whiteCanCastleLong) {
-//                moves.add(new ChessMove(pos, new ChessPosition(1, 3), null));
-//            }
-//            if (whiteCanCastleShort) {
-//                moves.add(new ChessMove(pos, new ChessPosition(1, 7), null));
-//            }
-//        }
-//        else {
-//            if (blackCanCastleLong) {
-//                moves.add(new ChessMove(pos, new ChessPosition(8, 3), null));
-//            }
-//            if (blackCanCastleShort) {
-//                moves.add(new ChessMove(pos, new ChessPosition(8, 7), null));
-//            }
-//        }
         return moves;
     }
 }

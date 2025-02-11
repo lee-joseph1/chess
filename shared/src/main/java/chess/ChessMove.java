@@ -66,4 +66,5 @@ public class ChessMove {
     public String toString() {
         return "ChessMove[" + startPos + ", " + endPos + ", " + promoType + "]";
     }
+    //public String toString() {return "ChessMove[" + endPos + "]";}  //FOR EASIER DEBUGGING
 }

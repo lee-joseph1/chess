@@ -1,0 +1,50 @@
+package chess;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static chess.ChessGame.whiteCanCastleLong;
+import static chess.ChessGame.whiteCanCastleShort;
+import static chess.ChessGame.blackCanCastleLong;
+import static chess.ChessGame.blackCanCastleShort;
+
+public class MovesKing extends MoveCalculator{
+    //allow any two r+-0,1, f+-0,1
+    //run validity checks (all)
+    //remember that moving into check is handled by CheckIntoCheck class
+    //compile final list
+    public static Collection<ChessMove> getMoves(ChessBoard board, ChessPosition pos) {
+        Collection<ChessMove> moves = new ArrayList<>();
+        for (int dr = -1; dr <=1; dr++) {
+            int targR = pos.getRow() + dr;
+            for (int dc = -1; dc <=1; dc++) {
+                if (dr == 0 && dc == 0) continue;
+                int targC = pos.getColumn() + dc;
+                ChessMove ret = kingNight(board, pos, targR, targC);
+                if (ret != null) moves.add(ret);
+            }
+        }
+        System.out.println("White Long" + whiteCanCastleLong);
+        System.out.println("Black Long" + blackCanCastleLong);
+        System.out.println("White Short" + whiteCanCastleShort);
+        System.out.println("Black Short" + blackCanCastleShort);
+        if (board.getPiece(pos).getTeamColor() == ChessGame.TeamColor.WHITE) {
+            if (whiteCanCastleLong) {
+                moves.add(new ChessMove(pos, new ChessPosition(1, 3), null));
+            }
+            if (whiteCanCastleShort) {
+                moves.add(new ChessMove(pos, new ChessPosition(1, 7), null));
+            }
+        }
+        else {
+            if (blackCanCastleLong) {
+                moves.add(new ChessMove(pos, new ChessPosition(8, 3), null));
+            }
+            if (blackCanCastleShort) {
+                moves.add(new ChessMove(pos, new ChessPosition(8, 7), null));
+            }
+        }
+        System.out.println("Attempting moves" + moves);
+        return moves;
+    }
+}

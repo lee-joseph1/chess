@@ -78,6 +78,7 @@ public class ChessGame {
         if (piece == null) {
             return moves;
         }
+        System.out.println("Piece: " + piece);
         ChessGame.TeamColor teamColor = piece.getTeamColor();
         Collection<ChessMove> attemptMoves = piece.pieceMoves(board, startPosition);
         for (ChessMove move : attemptMoves) {
@@ -86,17 +87,30 @@ public class ChessGame {
             if (tryEnPassant(move)) {
                 moves.add(move);
             }
+            else if (piece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(end.getColumn() - start.getColumn()) == 2) {
+                System.out.println("Trying to castle: " + move);
+                if (tryCastle(move)) {
+                    moves.add(move);
+                    System.out.println(moves);
+                    return moves;
+                }
+            }
             else {
+                System.out.println("Did not castle: ");
                 ChessPiece savePiece = board.getPiece(move.getEndPosition());
                 board.addPiece(end, piece);
                 board.addPiece(start, null);
                 if (!isInCheck(teamColor)) {
-                    moves.add(move);
+                    if (piece.getPieceType() != ChessPiece.PieceType.KING || Math.abs(end.getColumn() - start.getColumn()) == 1)
+                    {
+                        moves.add(move);
+                    }
                 }
                 board.addPiece(move.getStartPosition(), piece);
                 board.addPiece(move.getEndPosition(), savePiece);
             }
         }
+        System.out.print(moves);
         return moves;
     }
 
@@ -119,6 +133,96 @@ public class ChessGame {
             board.addPiece(capture, savePiece);
             board.addPiece(move.getEndPosition(), null);
         }
+        return false;
+    }
+
+    public boolean tryCastle(ChessMove move) {
+        System.out.print(board);
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece king = board.getPiece(start);
+        ChessGame.TeamColor teamColor = king.getTeamColor();
+        if (king.getPieceType() == ChessPiece.PieceType.KING && Math.abs(end.getColumn() - start.getColumn()) > 1) {
+            if (isInCheck(teamColor)) {
+                System.out.println("In check initially");
+                return false;
+            }
+            board.addPiece(start, null);//get rid of king
+            System.out.print(board);
+            if (start.getColumn() > end.getColumn()) {//short
+                System.out.println("Castle short");
+                System.out.println("Comparison: " + start.getColumn() + " - " + end.getColumn());
+                ChessPosition mid = new ChessPosition(start.getRow(), 6);
+                if (board.getPiece(mid) != null || board.getPiece(end) != null) {
+                    System.out.println("Middle space occupied");
+                    board.addPiece(start, king);
+                    return false; //middle 2 spaces must be empty
+                }
+                board.addPiece(mid, king); //check moving through check
+                System.out.print(board);
+                if (isInCheck(teamColor)) {
+                    System.out.println("Through check");
+                    board.addPiece(start, king);
+                    board.addPiece(mid, null);
+                    return false;
+                }
+                board.addPiece(mid, null); //keep moving
+                System.out.print(board);
+                board.addPiece(new ChessPosition(start.getRow(), 6), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                board.addPiece(new ChessPosition(start.getRow(), 8), null);
+                board.addPiece(end, king);
+                System.out.print(board);
+                if (!isInCheck(teamColor)) {
+                    System.out.println("Castled short successfully");
+                    board.addPiece(new ChessPosition(start.getRow(), 6), null);
+                    board.addPiece(new ChessPosition(start.getRow(), 8), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                    board.addPiece(end, null);
+                    board.addPiece(start, king);
+                    return true;
+                }
+                board.addPiece(new ChessPosition(start.getRow(), 6), null);
+                board.addPiece(new ChessPosition(start.getRow(), 8), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                board.addPiece(end, null);
+                board.addPiece(start, king);
+                System.out.print(board);
+            }
+            else {//long
+                System.out.println("Castle long");
+                ChessPosition mid = new ChessPosition(start.getRow(), 4);
+                if (board.getPiece(mid) != null || board.getPiece(end) != null) {
+                    System.out.print("Middle space occupied");
+                    board.addPiece(start, king);
+                    return false;
+                }
+                board.addPiece(mid, king);
+                System.out.print(board);
+                if (isInCheck(teamColor)) {
+                    System.out.println("Through check");
+                    board.addPiece(start, king);
+                    board.addPiece(mid, null);
+                    return false;
+                }
+                board.addPiece(mid, null);
+                board.addPiece(new ChessPosition(start.getRow(), 4), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                board.addPiece(new ChessPosition(start.getRow(), 1), null);
+                board.addPiece(end, king);
+                System.out.print(board);
+                if (!isInCheck(teamColor)) {
+                    System.out.println("Castle long successfully");
+                    board.addPiece(new ChessPosition(start.getRow(), 4), null);
+                    board.addPiece(new ChessPosition(start.getRow(), 1), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                    board.addPiece(end, null);
+                    board.addPiece(start, king);
+                    return true;
+                }
+                board.addPiece(new ChessPosition(start.getRow(), 4), null);
+                board.addPiece(new ChessPosition(start.getRow(), 1), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                board.addPiece(end, null);
+                board.addPiece(start, king);
+                System.out.print(board);
+            }
+        }
+        System.out.print(board);
         return false;
     }
 
@@ -180,6 +284,25 @@ public class ChessGame {
                 ChessPosition capture = new ChessPosition(start.getRow(), end.getColumn());
                 board.addPiece(capture, null);
                 board.addPiece(start, null);
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.KING &&
+                    Math.abs(end.getColumn() - start.getColumn()) > 1) {
+                System.out.print("MAKING CASTLE MOVE");
+                ChessGame.TeamColor teamColor = piece.getTeamColor();
+                System.out.print(board);
+                board.addPiece(start, null);
+                System.out.print(board);
+                if (start.getRow() > end.getRow()) {//short
+                    board.addPiece(new ChessPosition(start.getRow(), 6), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                    board.addPiece(new ChessPosition(start.getRow(), 8), null);
+                    board.addPiece(end, piece);
+                }
+                else {//long
+                    board.addPiece(new ChessPosition(start.getRow(), 4), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+                    board.addPiece(new ChessPosition(start.getRow(), 1), null);
+                    board.addPiece(end, piece);
+                }
+                System.out.print(board);
             }
             else if (move.getPromotionPiece() != null) {
                 board.addPiece(end, new ChessPiece(teamTurn, move.getPromotionPiece()));
