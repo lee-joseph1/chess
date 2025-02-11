@@ -275,9 +275,7 @@ public class ChessGame {
                 ChessPiece currentPiece = board.getPiece(currentPosition);
                 if (currentPiece != null && currentPiece.getTeamColor() != teamColor) {
                     for (ChessMove threat : currentPiece.pieceMoves(board, currentPosition)) {
-                        if (threat.getEndPosition().equals(kingPos)) {
-                            return true;
-                        }
+                        return threat.getEndPosition().equals(kingPos);
                     }
                 }
             }

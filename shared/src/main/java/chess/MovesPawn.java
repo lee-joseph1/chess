@@ -39,7 +39,6 @@ public class MovesPawn extends MoveCalculator{
                 }
             }
         }
-        System.out.print(moves);
         return moves;
     }
 

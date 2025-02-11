@@ -36,7 +36,6 @@ public class ChessPiece {
      */
     public ChessGame.TeamColor getTeamColor() {
         return color;
-        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -44,7 +43,6 @@ public class ChessPiece {
      */
     public PieceType getPieceType() {
         return type;
-        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -55,8 +53,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        //throw new RuntimeException("Not implemented");
-        //switch cases when each move calculator completed
         return switch (type){
             case PAWN -> MovesPawn.getMoves(board, myPosition);
             case BISHOP -> MovesBishop.getMoves(board, myPosition);
@@ -81,8 +77,12 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChessPiece that = (ChessPiece) o;
         return color == that.color && type == that.type;
     }

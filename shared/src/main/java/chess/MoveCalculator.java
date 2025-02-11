@@ -37,10 +37,10 @@ public class MoveCalculator {
 
     public static ChessMove kingNight (ChessBoard board, ChessPosition pos, int targR, int targC){
         if (isOnBoard(new ChessPosition(targR, targC))) {
-            ChessPosition targPos = new ChessPosition(targR, targC);
-            ChessPiece targPiece = board.getPiece(targPos);
-            if (targPiece == null || ontoEnemyPiece(targPos, board, board.getPiece(pos))) {
-                return new ChessMove(pos, targPos, null);
+            ChessPosition targetPos = new ChessPosition(targR, targC);
+            ChessPiece targetPiece = board.getPiece(targetPos);
+            if (targetPiece == null || ontoEnemyPiece(targetPos, board, board.getPiece(pos))) {
+                return new ChessMove(pos, targetPos, null);
             }
         }
         return null;
