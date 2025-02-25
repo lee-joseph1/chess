@@ -8,7 +8,6 @@ import spark.Response;
 
 public class ClearHandler implements Route {
     private final UserService userService;
-    private final Gson gson = new Gson();
 
     public ClearHandler(UserService userService) {
         this.userService = userService;
@@ -18,6 +17,8 @@ public class ClearHandler implements Route {
     public Object handle(Request request, Response response) {
         try {
                 userService.clear();
+                //gameService.clear();
+                //authService.clear();
             } catch (Exception exception) {
                 response.status(500);
                 return "{\"message\":\"Error: " + exception.getMessage() + "\"}";

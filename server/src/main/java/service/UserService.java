@@ -5,7 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.UserData;
-import model.authData;
+import model.AuthData;
 import service.requests.RegisterRequest;
 import service.responses.RegisterResponse;
 
@@ -36,7 +36,7 @@ public class UserService {
         UserData user = new UserData(request.username(), request.password(), request.email());
         userDao.createUser(user);
         String authToken = UUID.randomUUID().toString();
-        authData authData = new authData(authToken, request.username());
+        AuthData authData = new AuthData(authToken, request.username());
         authDao.createAuth(authData);
         return new RegisterResponse(request.username(), authToken);
     }

@@ -1,12 +1,10 @@
 package dataaccess;
 
 //import model.AuthData;
-import model.authData;
-
-import java.util.HashMap;
+import model.AuthData;
 
 public interface AuthDAO {
-    void createAuth(authData authData);
+    void createAuth(AuthData authData);
     void clear();
     //void deleteAuth(String username, String authToken);
     //AuthData getAuthByUser(String username);
