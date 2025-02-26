@@ -7,6 +7,8 @@ import dataaccess.MemoryGameDAO;
 import dataaccess.UserDAO;
 import dataaccess.MemoryUserDAO;
 import handler.ClearHandler;
+import handler.LoginHandler;
+import service.AuthService;
 import service.GameService;
 import service.UserService;
 import handler.RegisterHandler;
@@ -14,7 +16,6 @@ import spark.*;
 
 
 public class Server {
-    private UserService userService;
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -25,13 +26,20 @@ public class Server {
         UserDAO userDao = new MemoryUserDAO();
         AuthDAO authDao = new MemoryAuthDAO();
         GameDAO gameDao = new MemoryGameDAO();
-        this.userService = new UserService(authDao, userDao, gameDao);
+        UserService userService = new UserService(authDao, userDao, gameDao);
+        AuthService authService = new AuthService(authDao, userDao, gameDao);
+        GameService gameService = new GameService(authDao, userDao, gameDao);
+//        this.userService = new UserService(authDao, userDao, gameDao);
+//        this.authService = new AuthService(authDao, userDao, gameDao);
+//        this.gameService = new GameService(authDao, userDao, gameDao);
         //this.gameService = new GameService(userDao, authDao, gameDao);
 
         //register user
         Spark.post("/user", new RegisterHandler(userService));
+        //login
+        //Spark.post("/session", new LoginHandler(authService, userService));
         //clear (ish? required for register to pass, will revisit in greater detail)
-        Spark.delete("/db", new ClearHandler(userService));
+        Spark.delete("/db", new ClearHandler(authService, userService, gameService));
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();

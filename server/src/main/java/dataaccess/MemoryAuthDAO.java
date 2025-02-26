@@ -12,6 +12,16 @@ public class MemoryAuthDAO implements AuthDAO {
     }
 
     @Override
+    public AuthData getAuthByUser(String username) {
+        return authMap.get(username);
+    }
+
+    @Override
+    public HashMap<String, AuthData> getAllAuths() {
+        return authMap;
+    }
+
+    @Override
     public void clear() {
         authMap.clear();
     }
