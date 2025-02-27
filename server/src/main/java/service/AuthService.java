@@ -1,10 +1,13 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import service.requests.LoginRequest;
+import service.requests.LogoutRequest;
 import service.responses.LoginResponse;
+import service.responses.LogoutResponse;
 
 public class AuthService {
     private final AuthDAO authDao;
@@ -17,7 +20,9 @@ public class AuthService {
         this.gameDao = gameDAO;
     }
 
-    public void login(String username, String password) {}
+    public LogoutResponse logout(LogoutRequest request) throws DataAccessException {
+        AuthData authData = authDao.getAuthByToken(request.authToken)
+    }
 
     public void clear() {
         authDao.clear();

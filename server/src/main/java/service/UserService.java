@@ -7,6 +7,7 @@ import dataaccess.UserDAO;
 import model.UserData;
 import model.AuthData;
 import service.requests.LoginRequest;
+import service.requests.LogoutRequest;
 import service.requests.RegisterRequest;
 import service.responses.LoginResponse;
 import service.responses.RegisterResponse;
