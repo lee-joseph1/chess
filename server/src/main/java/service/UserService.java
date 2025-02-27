@@ -44,19 +44,19 @@ public class UserService {
         return new RegisterResponse(request.username(), authToken);
     }
 
-    public LoginResponse login(LoginRequest request) throws DataAccessException {
-        if (request.username() == null || request.password() == null) {
-            throw new IllegalArgumentException("bad request");
-        }
-        UserData user = userDao.getUserByUsername(request.username());
-        if (user == null || !(user.password().equals(request.password()))) {
-            throw new DataAccessException("Username/Password is incorrect");
-        }
-        String authToken = UUID.randomUUID().toString();
-        AuthData authData = new AuthData(authToken, request.username());
-        authDao.createAuth(authData);
-        return new LoginResponse(request.username(), authToken);
-    }
+//    public LoginResponse login(LoginRequest request) throws DataAccessException {
+//        if (request.username() == null || request.password() == null) {
+//            throw new IllegalArgumentException("bad request");
+//        }
+//        UserData user = userDao.getUserByUsername(request.username());
+//        if (user == null || !(user.password().equals(request.password()))) {
+//            throw new DataAccessException("Username/Password is incorrect");
+//        }
+//        String authToken = UUID.randomUUID().toString();
+//        AuthData authData = new AuthData(authToken, request.username());
+//        authDao.createAuth(authData);
+//        return new LoginResponse(request.username(), authToken);
+//    }
 
     public void clear() {
         userDao.clear();

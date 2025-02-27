@@ -4,10 +4,14 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
+import model.AuthData;
+import model.UserData;
 import service.requests.LoginRequest;
 import service.requests.LogoutRequest;
 import service.responses.LoginResponse;
 import service.responses.LogoutResponse;
+
+import java.util.UUID;
 
 public class AuthService {
     private final AuthDAO authDao;
@@ -20,16 +24,25 @@ public class AuthService {
         this.gameDao = gameDAO;
     }
 
-    public LogoutResponse logout(LogoutRequest request) throws DataAccessException {
-        AuthData authData = authDao.getAuthByToken(request.authToken)
+    public LoginResponse login(LoginRequest request) throws DataAccessException {
+        if (request.username() == null || request.password() == null) {
+            throw new IllegalArgumentException("bad request");
+        }
+        UserData user = userDao.getUserByUsername(request.username());
+        if (user == null || !(user.password().equals(request.password()))) {
+            throw new DataAccessException("Username/Password is incorrect");
+        }
+        String authToken = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authToken, request.username());
+        authDao.createAuth(authData);
+        return new LoginResponse(request.username(), authToken);
     }
+
+//    public LogoutResponse logout(LogoutRequest request) throws DataAccessException {
+//        AuthData authData = authDao.getAuthByToken(request.authToken);
+//    }
 
     public void clear() {
         authDao.clear();
-    }
-
-    public LoginResponse login(LoginRequest request) {
-        return null;
-        //if (request.username() == null || request.password() == null || request.email == null) {}
     }
 }

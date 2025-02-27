@@ -2,7 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import service.UserService;
+import service.AuthService;
 import service.requests.LoginRequest;
 import service.responses.LoginResponse;
 import spark.Request;
@@ -10,18 +10,18 @@ import spark.Response;
 import spark.Route;
 
 public class LoginHandler implements Route {
-    private final UserService userService;
+    private final AuthService authService;
     private final Gson gson = new Gson();
 
-    public LoginHandler(UserService userService) {
-        this.userService = userService;
+    public LoginHandler(AuthService authService) {
+        this.authService = authService;
     }
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
         try {
             LoginRequest loginRequest = gson.fromJson(request.body(), LoginRequest.class);
-            LoginResponse loginResponse = userService.login(loginRequest);
+            LoginResponse loginResponse = authService.login(loginRequest);
             response.status(200);
             response.body("{\"username\":\"\",\"authToken\":\"");
             return gson.toJson(loginResponse);

@@ -37,7 +37,7 @@ public class Server {
         //register user
         Spark.post("/user", new RegisterHandler(userService));
         //login
-        Spark.post("/session", new LoginHandler(userService));
+        Spark.post("/session", new LoginHandler(authService));
         //logout
         //a
         //create game
