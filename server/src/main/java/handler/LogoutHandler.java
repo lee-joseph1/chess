@@ -23,6 +23,7 @@ public class LogoutHandler implements Route {
             LogoutRequest logoutRequest = new LogoutRequest(request.headers("authorization"));
             LogoutResponse logoutResponse = authService.logout(logoutRequest);
             response.status(200);
+            response.body("{}");
             return gson.toJson(logoutResponse);
         }
         catch (DataAccessException exception) {
