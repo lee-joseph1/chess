@@ -6,7 +6,9 @@ import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.UserData;
 import model.AuthData;
+import service.requests.LoginRequest;
 import service.requests.RegisterRequest;
+import service.responses.LoginResponse;
 import service.responses.RegisterResponse;
 
 import java.util.UUID;
@@ -30,7 +32,7 @@ public class UserService {
         if (userDao.getUserByUsername(request.username()) != null) {
             throw new DataAccessException("already taken");
         }
-        if (request.username() == null || request.email() == null || request.password() == null) {
+        if (request.username() == null || request.password() == null || request.email() == null) {
             throw new IllegalArgumentException("bad request");
         }
         UserData user = new UserData(request.username(), request.password(), request.email());
@@ -39,6 +41,20 @@ public class UserService {
         AuthData authData = new AuthData(authToken, request.username());
         authDao.createAuth(authData);
         return new RegisterResponse(request.username(), authToken);
+    }
+
+    public LoginResponse login(LoginRequest request) throws DataAccessException {
+        if (request.username() == null || request.password() == null) {
+            throw new IllegalArgumentException("bad request");
+        }
+        UserData user = userDao.getUserByUsername(request.username());
+        if (user == null || !(user.password().equals(request.password()))) {
+            throw new DataAccessException("Username/Password is incorrect");
+        }
+        String authToken = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authToken, request.username());
+        authDao.createAuth(authData);
+        return new LoginResponse(request.username(), authToken);
     }
 
     public void clear() {

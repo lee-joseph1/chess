@@ -21,6 +21,8 @@ public class RegisterHandler implements Route {
         try {
             RegisterRequest registerRequest = gson.fromJson(request.body(), RegisterRequest.class);
             RegisterResponse registerResponse = userService.register(registerRequest);
+            response.status(200);
+            response.body("{\"username\":\"\", \"authToken\":\"\"}");
             return gson.toJson(registerResponse);
         }
         catch (IllegalArgumentException exception) {
@@ -28,17 +30,12 @@ public class RegisterHandler implements Route {
             return "{\"message\":\"Error: bad request\"}";
         }
         catch (DataAccessException exception) {
-            if (exception.getMessage().contains("User already exists")
-                    || exception.getMessage().contains("already taken")) {
-                response.status(403);
-                return "{\"message\":\"Error: already taken\"}";
-            }
+            response.status(403);
+            return "{\"message\":\"Error: already taken\"}";
         }
         catch (Exception exception) {
             response.status(500);
             return "{\"message\":\"Error: " + exception.getMessage() + "\"}";
         }
-        response.status(200);
-        return "{\"username\":\"\", \"authToken\":\"\"}";
     }
 }
