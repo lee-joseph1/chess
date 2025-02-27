@@ -38,9 +38,17 @@ public class AuthService {
         return new LoginResponse(request.username(), authToken);
     }
 
-//    public LogoutResponse logout(LogoutRequest request) throws DataAccessException {
-//        AuthData authData = authDao.getAuthByToken(request.authToken);
-//    }
+    public LogoutResponse logout(LogoutRequest request) throws DataAccessException {
+        if (request.authToken() == null) {
+            throw new IllegalArgumentException("bad request");
+        }
+        AuthData authData = authDao.getAuthByToken(request.authToken());
+        if (authData == null) {
+            throw new DataAccessException("unauthorized auth");
+        }
+        authDao.deleteAuth(authData);
+        return new LogoutResponse();
+    }
 
     public void clear() {
         authDao.clear();

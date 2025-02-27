@@ -25,7 +25,8 @@ public class LoginHandler implements Route {
             response.status(200);
             response.body("{\"username\":\"\",\"authToken\":\"");
             return gson.toJson(loginResponse);
-        } catch (IllegalArgumentException exception) {
+        }
+        catch (IllegalArgumentException exception) {
             response.status(400);
             return "{\"message\":\"Error: bad request\"}";
         }

@@ -1,4 +1,8 @@
 package service.requests;
 
-public class LogoutRequest {
+public record LogoutRequest (String authToken){
+    @Override
+    public String authToken() {
+        return authToken;
+    }
 }
