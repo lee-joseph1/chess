@@ -1,7 +1,9 @@
 package dataaccess;
 
+import model.GameData;
+
 public interface GameDAO {
-    void createGame(String gameID, String whiteUsername, String blackUsername, String gameName);
+    void createGame(GameData gameData);
     void clear();
     //game getGameByID(String gameID);
     //void updateGame(String gameID, String playerColor, String username);

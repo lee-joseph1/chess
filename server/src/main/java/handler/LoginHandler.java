@@ -11,7 +11,7 @@ import spark.Route;
 
 public class LoginHandler implements Route {
     private final AuthService authService;
-    private final Gson gson = new Gson();
+    private final Gson serializer = new Gson();
 
     public LoginHandler(AuthService authService) {
         this.authService = authService;
@@ -20,11 +20,11 @@ public class LoginHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         try {
-            LoginRequest loginRequest = gson.fromJson(request.body(), LoginRequest.class);
+            LoginRequest loginRequest = serializer.fromJson(request.body(), LoginRequest.class);
             LoginResponse loginResponse = authService.login(loginRequest);
             response.status(200);
             response.body("{\"username\":\"\",\"authToken\":\"");
-            return gson.toJson(loginResponse);
+            return serializer.toJson(loginResponse);
         }
         catch (IllegalArgumentException exception) {
             response.status(400);

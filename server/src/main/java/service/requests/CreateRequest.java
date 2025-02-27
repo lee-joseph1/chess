@@ -1,4 +1,8 @@
 package service.requests;
 
-public class CreateRequest {
+public record CreateRequest(String gameName) {
+    @Override
+    public String gameName() {
+        return gameName;
+    }
 }

@@ -11,7 +11,7 @@ import spark.Route;
 
 public class LogoutHandler implements Route {
     private final AuthService authService;
-    private final Gson gson = new Gson();
+    private final Gson serializer = new Gson();
 
     public LogoutHandler(AuthService authService) {
         this.authService = authService;
@@ -24,7 +24,7 @@ public class LogoutHandler implements Route {
             LogoutResponse logoutResponse = authService.logout(logoutRequest);
             response.status(200);
             response.body("{}");
-            return gson.toJson(logoutResponse);
+            return serializer.toJson(logoutResponse);
         }
         catch (DataAccessException exception) {
             response.status(401);

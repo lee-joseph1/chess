@@ -1,4 +1,8 @@
 package service.responses;
 
-public class CreateResponse {
+public record CreateResponse(int gameID){
+    @Override
+    public int gameID() {
+        return gameID;
+    }
 }

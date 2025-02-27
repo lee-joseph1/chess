@@ -6,13 +6,10 @@ import dataaccess.GameDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.UserDAO;
 import dataaccess.MemoryUserDAO;
-import handler.ClearHandler;
-import handler.LoginHandler;
-import handler.LogoutHandler;
+import handler.*;
 import service.AuthService;
 import service.GameService;
 import service.UserService;
-import handler.RegisterHandler;
 import spark.*;
 
 
@@ -42,7 +39,7 @@ public class Server {
         //logout
         Spark.delete("/session", new LogoutHandler(authService));
         //create game
-        //a
+        Spark.post("/game", new CreateHandler(gameService));
         //list games
         //a
         //join game

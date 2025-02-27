@@ -11,7 +11,7 @@ import spark.Response;
 
 public class RegisterHandler implements Route {
     private final UserService userService;
-    private final Gson gson = new Gson();
+    private final Gson serializer = new Gson();
 
     public RegisterHandler(UserService userService) {
         this.userService = userService;
@@ -19,11 +19,11 @@ public class RegisterHandler implements Route {
 
     public Object handle(Request request, Response response) {
         try {
-            RegisterRequest registerRequest = gson.fromJson(request.body(), RegisterRequest.class);
+            RegisterRequest registerRequest = serializer.fromJson(request.body(), RegisterRequest.class);
             RegisterResponse registerResponse = userService.register(registerRequest);
             response.status(200);
             response.body("{\"username\":\"\", \"authToken\":\"\"}");
-            return gson.toJson(registerResponse);
+            return serializer.toJson(registerResponse);
         }
         catch (IllegalArgumentException exception) {
             response.status(400);
