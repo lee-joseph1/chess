@@ -40,10 +40,10 @@ public class Server {
         Spark.delete("/session", new LogoutHandler(authService));
         //create game
         Spark.post("/game", new CreateHandler(gameService));
-        //list games
-        //a
         //join game
-        //a
+        Spark.put("/game", new JoinHandler(gameService));
+        //list games
+        //Spark.get("/game", new ListHandler(gameService));
         //clear (ish? required for register to pass, will revisit in greater detail)
         Spark.delete("/db", new ClearHandler(authService, userService, gameService));
 

@@ -23,7 +23,7 @@ public class LoginHandler implements Route {
             LoginRequest loginRequest = serializer.fromJson(request.body(), LoginRequest.class);
             LoginResponse loginResponse = authService.login(loginRequest);
             response.status(200);
-            response.body("{\"username\":\"\",\"authToken\":\"");
+            response.body("{\"username\":\"\",\"authToken\":\"}");
             return serializer.toJson(loginResponse);
         }
         catch (IllegalArgumentException exception) {

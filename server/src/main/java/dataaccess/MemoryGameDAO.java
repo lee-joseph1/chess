@@ -11,6 +11,16 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
+    public GameData getGameByID(Integer gameID) {
+        return gameMap.get(gameID);
+    }
+
+    @Override
+    public void updateGame(Integer gameID, GameData gameData) {
+        gameMap.replace(gameID, gameData);
+    }
+
+    @Override
     public void clear() {
         gameMap.clear();
     }

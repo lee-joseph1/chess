@@ -32,7 +32,7 @@ public class AuthService {
         if (user == null || !(user.password().equals(request.password()))) {
             throw new DataAccessException("Username/Password is incorrect");
         }
-        String authToken = UUID.randomUUID().toString();
+        String authToken = authDao.generateUniqueToken();//UUID.randomUUID().toString();
         AuthData authData = new AuthData(authToken, request.username());
         authDao.createAuth(authData);
         return new LoginResponse(request.username(), authToken);

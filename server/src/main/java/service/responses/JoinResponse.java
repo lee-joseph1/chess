@@ -1,4 +1,4 @@
 package service.responses;
 
-public class JoinResponse {
+public record JoinResponse() {
 }

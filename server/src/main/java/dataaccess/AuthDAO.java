@@ -10,4 +10,5 @@ public interface AuthDAO {
     AuthData getAuthByToken(String authToken);
     HashMap<String, AuthData> getAllAuths();
     void deleteAuth(AuthData authData);
+    String generateUniqueToken();
 }
