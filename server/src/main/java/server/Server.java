@@ -37,7 +37,15 @@ public class Server {
         //register user
         Spark.post("/user", new RegisterHandler(userService));
         //login
-        //Spark.post("/session", new LoginHandler(authService, userService));
+        Spark.post("/session", new LoginHandler(userService));
+        //logout
+        //a
+        //create game
+        //a
+        //list games
+        //a
+        //join game
+        //a
         //clear (ish? required for register to pass, will revisit in greater detail)
         Spark.delete("/db", new ClearHandler(authService, userService, gameService));
 
