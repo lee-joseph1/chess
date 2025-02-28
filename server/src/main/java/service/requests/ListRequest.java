@@ -1,4 +1,8 @@
 package service.requests;
 
-public class ListRequest {
+public record ListRequest(String authToken) {
+    @Override
+    public String authToken() {
+        return authToken;
+    }
 }

@@ -1,7 +1,10 @@
 package dataaccess;
 
 import model.GameData;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MemoryGameDAO implements GameDAO {
     HashMap<Integer, GameData> gameMap = new HashMap<>();
@@ -18,6 +21,11 @@ public class MemoryGameDAO implements GameDAO {
     @Override
     public void updateGame(Integer gameID, GameData gameData) {
         gameMap.replace(gameID, gameData);
+    }
+
+    @Override
+    public ArrayList<GameData> getAllGames() {
+        return new ArrayList<>(gameMap.values());
     }
 
     @Override

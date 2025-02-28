@@ -43,7 +43,7 @@ public class Server {
         //join game
         Spark.put("/game", new JoinHandler(gameService));
         //list games
-        //Spark.get("/game", new ListHandler(gameService));
+        Spark.get("/game", new ListHandler(gameService));
         //clear (ish? required for register to pass, will revisit in greater detail)
         Spark.delete("/db", new ClearHandler(authService, userService, gameService));
 

@@ -52,5 +52,6 @@ public class MemoryAuthDAO implements AuthDAO {
     public void clear() {
         authMap.clear();
         tokenMap.clear();
+        tokens.clear();
     }
 }

@@ -5,18 +5,18 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
-import model.GameData;
-import model.UserData;
 import model.AuthData;
+import model.GameData;
 import service.requests.CreateRequest;
 import service.requests.JoinRequest;
-import service.requests.RegisterRequest;
+import service.requests.ListRequest;
 import service.responses.CreateResponse;
 import service.responses.JoinResponse;
-import service.responses.RegisterResponse;
+import service.responses.ListResponse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
+import java.util.List;
 
 
 public class GameService {
@@ -81,10 +81,14 @@ public class GameService {
         return new JoinResponse();
     }
 
-//    public ListResponse list(ListRequest request) throws DataAccessException {
-//
-//    }
-//
+    public ListResponse list(String request) throws DataAccessException {
+        //String authToken = request.authToken();
+        if (!checkAuth(request)) {
+            throw new DataAccessException("unauthorized");
+        }
+        ArrayList<GameData> games = gameDao.getAllGames();
+        return new ListResponse(games);
+    }
 
     public boolean checkAuth(String authToken) {
         return authToken != null && authDao.getAuthByToken(authToken) != null;

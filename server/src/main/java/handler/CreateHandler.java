@@ -2,6 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import model.GameData;
 import service.GameService;
 import service.requests.CreateRequest;
 import service.responses.CreateResponse;
@@ -21,7 +22,7 @@ public class CreateHandler implements Route {
     public Object handle(Request request, Response response) throws Exception {
         try {
             String authToken = request.headers("authorization");
-            CreateRequest createRequest = new CreateRequest(authToken);
+            CreateRequest createRequest = serializer.fromJson(request.body(), CreateRequest.class);
             CreateResponse createResponse = gameService.create(createRequest, authToken);
             response.status(200);
             response.body("{\"gameName\":\"\"}");
