@@ -1,6 +1,5 @@
 package handler;
 
-import com.google.gson.Gson;
 import service.AuthService;
 import service.GameService;
 import service.UserService;

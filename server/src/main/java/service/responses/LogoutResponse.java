@@ -1,4 +1,3 @@
 package service.responses;
 
-public record LogoutResponse (){
-}
+public record LogoutResponse (){}

@@ -1,10 +1,8 @@
 package dataaccess;
 
 import model.GameData;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MemoryGameDAO implements GameDAO {
     HashMap<Integer, GameData> gameMap = new HashMap<>();

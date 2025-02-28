@@ -18,12 +18,11 @@ public class LogoutHandler implements Route {
     }
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
         try {
             LogoutRequest logoutRequest = new LogoutRequest(request.headers("authorization"));
             LogoutResponse logoutResponse = authService.logout(logoutRequest);
             response.status(200);
-            response.body("{}");
             return serializer.toJson(logoutResponse);
         }
         catch (DataAccessException exception) {

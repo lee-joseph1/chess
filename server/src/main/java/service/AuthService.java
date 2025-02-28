@@ -2,7 +2,6 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -11,17 +10,13 @@ import service.requests.LogoutRequest;
 import service.responses.LoginResponse;
 import service.responses.LogoutResponse;
 
-import java.util.UUID;
-
 public class AuthService {
     private final AuthDAO authDao;
-    private final GameDAO gameDao;
     private final UserDAO userDao;
 
-    public AuthService(AuthDAO authDAO, UserDAO userDAO, GameDAO gameDAO) {
+    public AuthService(AuthDAO authDAO, UserDAO userDAO) {
         this.authDao = authDAO;
         this.userDao = userDAO;
-        this.gameDao = gameDAO;
     }
 
     public LoginResponse login(LoginRequest request) throws DataAccessException {
@@ -32,7 +27,7 @@ public class AuthService {
         if (user == null || !(user.password().equals(request.password()))) {
             throw new DataAccessException("Username/Password is incorrect");
         }
-        String authToken = authDao.generateUniqueToken();//UUID.randomUUID().toString();
+        String authToken = authDao.generateUniqueToken();
         AuthData authData = new AuthData(authToken, request.username());
         authDao.createAuth(authData);
         return new LoginResponse(request.username(), authToken);

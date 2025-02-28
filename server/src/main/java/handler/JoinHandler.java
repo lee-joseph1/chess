@@ -18,12 +18,11 @@ public class JoinHandler implements Route {
     }
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
         try {
             JoinRequest joinRequest = serializer.fromJson(request.body(), JoinRequest.class);
             JoinResponse joinResponse = gameService.join(joinRequest, request.headers("authorization"));
             response.status(200);
-            response.body("{ \"playerColor\":\"WHITE/BLACK\", \"gameID\": 1234 }");
             return serializer.toJson(joinResponse);
         }
         catch (IllegalArgumentException exception) {

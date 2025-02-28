@@ -22,7 +22,6 @@ public class RegisterHandler implements Route {
             RegisterRequest registerRequest = serializer.fromJson(request.body(), RegisterRequest.class);
             RegisterResponse registerResponse = userService.register(registerRequest);
             response.status(200);
-            response.body("{\"username\":\"\", \"authToken\":\"\"}");
             return serializer.toJson(registerResponse);
         }
         catch (IllegalArgumentException exception) {
