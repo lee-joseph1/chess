@@ -76,7 +76,7 @@ public class GameService {
         return new ListResponse(gameDao.getAllGames());
     }
 
-    public boolean noAuth(String authToken) {
+    private boolean noAuth(String authToken) {
         return authToken == null || authDao.getAuthByToken(authToken) == null;
     }
 
