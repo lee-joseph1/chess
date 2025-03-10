@@ -2,10 +2,13 @@ package server;
 
 import dataaccess.AuthDAO;
 import dataaccess.MemoryAuthDAO;
+import dataaccess.DbAuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.MemoryGameDAO;
+import dataaccess.DbGameDAO;
 import dataaccess.UserDAO;
 import dataaccess.MemoryUserDAO;
+import dataaccess.DbUserDAO;
 import handler.*;
 import service.AuthService;
 import service.GameService;
@@ -21,9 +24,9 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        UserDAO userDao = new MemoryUserDAO();
-        AuthDAO authDao = new MemoryAuthDAO();
-        GameDAO gameDao = new MemoryGameDAO();
+        UserDAO userDao = new DbUserDAO();//change these for memory/db
+        AuthDAO authDao = new DbAuthDAO();
+        GameDAO gameDao = new DbGameDAO();
         UserService userService = new UserService(authDao, userDao);
         AuthService authService = new AuthService(authDao, userDao);
         GameService gameService = new GameService(authDao, gameDao);
