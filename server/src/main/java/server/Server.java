@@ -1,14 +1,6 @@
 package server;
 
-import dataaccess.AuthDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.DbAuthDAO;
-import dataaccess.GameDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.DbGameDAO;
-import dataaccess.UserDAO;
-import dataaccess.MemoryUserDAO;
-import dataaccess.DbUserDAO;
+import dataaccess.*;
 import handler.*;
 import service.AuthService;
 import service.GameService;
@@ -18,7 +10,7 @@ import spark.*;
 
 public class Server {
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort) throws DataAccessException {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");

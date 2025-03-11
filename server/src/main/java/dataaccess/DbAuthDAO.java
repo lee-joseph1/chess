@@ -4,6 +4,7 @@ import model.AuthData;
 import passoff.exception.ResponseParseException;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -16,31 +17,57 @@ public class DbAuthDAO implements AuthDAO {
     }
 
 
-    @Override
+    @Override//addPet
     public void createAuth(AuthData authData) {
         var stmt = "INSERT INTO authData (token, username) VALUES (?, ?)";
         var username = authData.username();
+        var token = authData.authToken();
         try {
-            executeUpdate(stmt, authData.authToken(), username);
+            executeUpdate(stmt, token, username);
         }
         catch (SQLException | DataAccessException e) {
-            throw new RuntimeException("Error creating auth");
+            throw new RuntimeException("Error creating auth: " + e.getMessage());
         }
     }
 
-    @Override
+    @Override//deleteAllPets
     public void clear() {
-
+        var stmt = "TRUNCATE TABLE authData";
+        try {
+            executeUpdate(stmt);
+        }
+        catch (SQLException | DataAccessException e) {
+            throw new RuntimeException("Error clearing auth: " + e.getMessage());
+        }
     }
 
-    @Override
+    @Override//getPet
     public AuthData getAuthByToken(String authToken) {
+        try (var conn = DatabaseManager.getConnection()) {
+            var stmt = "SELECT * FROM authData WHERE token = ?";
+            try (var ps = conn.prepareStatement(stmt)) {
+                ps.setString(1, authToken);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return new AuthData(authToken, rs.getString("username"));
+                    }
+                }
+            }
+        } catch (DataAccessException | SQLException ex) {
+            throw new RuntimeException("Error getting auth by token: " + ex.getMessage());
+        }
         return null;
     }
 
-    @Override
+    @Override//deletePet
     public void deleteAuth(AuthData authData) {
-
+        try {
+            var stmt = "TRUNCATE authData";
+            executeUpdate(stmt);
+        }
+        catch (SQLException | DataAccessException e) {
+            throw new RuntimeException("Error deleting auth: " + e.getMessage());
+        }
     }
 
     @Override
@@ -81,7 +108,7 @@ public class DbAuthDAO implements AuthDAO {
                 ps.executeUpdate();
 //                var rs = ps.getGeneratedKeys();
 //                if (rs.next()) {
-//                    rs.getInt(1);
+//                    rs.getInt(1); not sure why returning an int unless autograder has preferred fail outputs?
 //                }i dont see how this part is used soooo im leaving it out unless necessary
             }
         } catch (SQLException ex) {
