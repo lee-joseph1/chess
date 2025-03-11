@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import dataaccess.DataAccessException;
 import java.sql.Statement;
+import java.util.UUID;
 
 import static java.sql.Types.NULL;
 
@@ -73,7 +74,7 @@ public class DbAuthDAO implements AuthDAO {
 
     @Override
     public String generateUniqueToken() {
-        return "";
+        return UUID.randomUUID().toString();
     }
 
     private final String[] createStatements = {
