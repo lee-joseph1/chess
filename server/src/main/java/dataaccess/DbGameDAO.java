@@ -2,12 +2,14 @@ package dataaccess;
 
 import model.GameData;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class DbGameDAO implements GameDAO{
-    public DbGameDAO() throws SQLException {
-        String createAuthTable = """
+    public DbGameDAO() {
+        String createGameTable = """
             CREATE TABLE IF NOT EXISTS gameData (
             'id' int NOT NULL AUTO_INCREMENT,
             'whiteUsername' VARCHAR(256),
@@ -15,6 +17,14 @@ public class DbGameDAO implements GameDAO{
             'gameName' varchar(256) NOT NULL,
             'json' TEXT DEFAULT NULL,
             PRIMARY KEY('id'))""";
+        try {
+            Connection conn = DatabaseManager.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute(createGameTable);
+        }
+        catch(Exception exception) {
+            System.out.println(exception.getMessage());
+        }
     }
 
     @Override
