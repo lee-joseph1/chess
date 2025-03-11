@@ -1,5 +1,6 @@
 import chess.*;
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import spark.*;
 import java.util.*;
 //import chess.server.src.main.java.server.Server;

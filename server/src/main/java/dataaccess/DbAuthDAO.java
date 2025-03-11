@@ -6,13 +6,14 @@ import passoff.exception.ResponseParseException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import dataaccess.DataAccessException;
 import java.sql.Statement;
 
 import static java.sql.Types.NULL;
 
 public class DbAuthDAO implements AuthDAO {
 
-    public DbAuthDAO() throws DataAccessException {
+    public DbAuthDAO() {
         configureDatabase();
     }
 
@@ -36,8 +37,8 @@ public class DbAuthDAO implements AuthDAO {
         try {
             executeUpdate(stmt);
         }
-        catch (SQLException | DataAccessException e) {
-            throw new RuntimeException("Error clearing auth: " + e.getMessage());
+        catch (Exception ex) {
+            throw new RuntimeException("Error clearing auth: " + ex.getMessage());
         }
     }
 
@@ -65,8 +66,8 @@ public class DbAuthDAO implements AuthDAO {
             var stmt = "TRUNCATE authData";
             executeUpdate(stmt);
         }
-        catch (SQLException | DataAccessException e) {
-            throw new RuntimeException("Error deleting auth: " + e.getMessage());
+        catch (Exception ex) {
+            throw new RuntimeException("Error deleting auth: " + ex.getMessage());
         }
     }
 
@@ -92,12 +93,12 @@ public class DbAuthDAO implements AuthDAO {
                     ps.executeUpdate();
                 }
             }
-        } catch (SQLException ex) {
-            throw new DataAccessException("Error creating database");
+    } catch (DataAccessException | SQLException ex) {
+            throw new RuntimeException("Error creating database");
         }
     }
 
-    private void executeUpdate(String stmt, Object... params) throws SQLException, DataAccessException {
+    private void executeUpdate(String stmt, Object... params) {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(stmt)) {
                 for (var i = 0; i < params.length; i++) {
@@ -109,10 +110,10 @@ public class DbAuthDAO implements AuthDAO {
 //                var rs = ps.getGeneratedKeys();
 //                if (rs.next()) {
 //                    rs.getInt(1); not sure why returning an int unless autograder has preferred fail outputs?
-//                }i dont see how this part is used soooo im leaving it out unless necessary
+//                }I don't see how this part is used soooo im leaving it out unless necessary
             }
-        } catch (SQLException ex) {
-            throw new DataAccessException("Failed to update database: " + ex.getMessage());
+        } catch (DataAccessException | SQLException ex) {
+            throw new RuntimeException("Failed to update database: " + ex.getMessage());
         }
     }
 }
