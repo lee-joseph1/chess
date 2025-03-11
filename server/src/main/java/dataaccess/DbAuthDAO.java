@@ -13,7 +13,7 @@ import static java.sql.Types.NULL;
 
 public class DbAuthDAO implements AuthDAO {
 
-    public DbAuthDAO() {
+    public DbAuthDAO() throws DataAccessException {
         configureDatabase();
     }
 
@@ -26,8 +26,8 @@ public class DbAuthDAO implements AuthDAO {
         try {
             executeUpdate(stmt, token, username);
         }
-        catch (SQLException | DataAccessException e) {
-            throw new RuntimeException("Error creating auth: " + e.getMessage());
+        catch (Exception ex) {
+            throw new RuntimeException("Error creating auth: " + ex.getMessage());
         }
     }
 
