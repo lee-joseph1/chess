@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import model.UserData;
@@ -9,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class DbGameDAO implements GameDAO{
@@ -18,22 +20,10 @@ public class DbGameDAO implements GameDAO{
 
     @Override
     public void createGame(GameData gameData) {
-        var stmt = "INSERT INTO gameData (gameName, whiteUsername, blackUsername, json) VALUES (?,?,?,?)";
+        var stmt = "INSERT INTO gameData (id, whiteUsername, blackUsername, gameName, json) VALUES (?,?,?,?,?)";
         var json = new Gson().toJson(gameData);
-        String whiteUsername;
-        String blackUsername;
-        if (gameData.whiteUsername() == null) {
-            whiteUsername = "";
-        }
-        else {
-            whiteUsername = gameData.whiteUsername();
-        }
-        if (gameData.blackUsername() == null) {
-            blackUsername = "";
-        }
-        else {
-            blackUsername = gameData.blackUsername();
-        }
+        String whiteUsername = gameData.whiteUsername() == null ? "" : gameData.whiteUsername();
+        String blackUsername = gameData.blackUsername() == null ? "" : gameData.blackUsername();
         try {
             executeUpdate(stmt, gameData.gameName(), whiteUsername, blackUsername, json);
         }
@@ -56,7 +46,7 @@ public class DbGameDAO implements GameDAO{
     @Override
     public GameData getGameByID(Integer gameID) {
         try (var conn = DatabaseManager.getConnection()) {
-            var stmt = "SELECT * FROM gameData WHERE id = ?";
+            var stmt = "SELECT id, gameName, whiteUsername, blackUsername, json FROM gameData WHERE id = ?";
             try (var ps = conn.prepareStatement(stmt)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
@@ -127,7 +117,7 @@ public class DbGameDAO implements GameDAO{
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            for (var stmt : createStatements) {
+            for (String stmt : createStatements) {
                 try (var ps = conn.prepareStatement(stmt)) {
                     ps.executeUpdate();
                 }
@@ -139,13 +129,19 @@ public class DbGameDAO implements GameDAO{
 
     private void executeUpdate(String stmt, Object... params) {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(stmt)) {
-                for (var i = 0; i < params.length; i++) {
+            try (var ps = conn.prepareStatement(stmt, RETURN_GENERATED_KEYS)) {
+                for (int i = 0; i < params.length; i++) {
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
+                    else if (param instanceof ChessGame p) ps.setString(i + 1, new Gson().toJson(p));
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();
+                var rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    rs.getInt(1);
+                } //put back the weird stuff i didnt understand in petshop hoping it solves this
             }
         } catch (DataAccessException | SQLException ex) {
             throw new RuntimeException("Failed to update database");
