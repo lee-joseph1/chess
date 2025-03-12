@@ -91,7 +91,7 @@ public class databaseTests {
         assertNull(result);
     }
 
-    @Test
+    @Test //passes
     public void passDeleteAuth() {
         authDAO.createAuth(new AuthData("validToken", "validUsername"));
         AuthData result = authDAO.getAuthByToken("validToken");
@@ -100,14 +100,17 @@ public class databaseTests {
         assertNull(authDAO.getAuthByToken("validToken"));
     }
 
-    @Test
+    @Test //passes
     public void failDeleteAuth() {
-
+        assertThrows(RuntimeException.class, () -> authDAO.deleteAuth(null));
     }
 
-    @Test
+    @Test //passes
     public void passClearAuth() {
-
+        authDAO.createAuth(new AuthData("validToken", "validUsername"));
+        assertNotNull(authDAO.getAuthByToken("validToken"));
+        authDAO.clear();
+        assertNull(authDAO.getAuthByToken("validToken"));
     }
 
     @Test
