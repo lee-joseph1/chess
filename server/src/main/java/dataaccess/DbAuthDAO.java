@@ -64,7 +64,7 @@ public class DbAuthDAO implements AuthDAO {
     @Override//deletePet
     public void deleteAuth(AuthData authData) {
         try {
-            var stmt = "TRUNCATE authData";
+            var stmt = "DELETE FROM authData WHERE token = ?";
             executeUpdate(stmt);
         }
         catch (Exception ex) {
@@ -108,10 +108,10 @@ public class DbAuthDAO implements AuthDAO {
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    rs.getInt(1); not sure why returning an int unless autograder has preferred fail outputs?
-//                }I don't see how this part is used soooo im leaving it out unless necessary
+                var rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    rs.getInt(1);
+                }
             }
         } catch (DataAccessException | SQLException ex) {
             throw new RuntimeException("Failed to update database: " + ex.getMessage());

@@ -50,7 +50,7 @@ public class DbGameDAO implements GameDAO{
     @Override
     public GameData getGameByID(Integer gameID) {
         try (var conn = DatabaseManager.getConnection()) {
-            var stmt = "SELECT * FROM userData WHERE gameID = ?";
+            var stmt = "SELECT * FROM gameData WHERE gameID = ?";
             try (var ps = conn.prepareStatement(stmt)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
@@ -93,8 +93,10 @@ public class DbGameDAO implements GameDAO{
             var stmt = "SELECT * FROM gameData ORDER BY gameID";
             try (var ps = conn.prepareStatement(stmt)) {
                 try (var rs = ps.executeQuery()) {
-                    var gameData = new Gson().fromJson(rs.getString("json"), GameData.class);
-                    games.add(gameData);
+                    while (rs.next()) {
+                        var gameData = new Gson().fromJson(rs.getString("json"), GameData.class);
+                        games.add(gameData);
+                    }
                 }
             }
             return games;
