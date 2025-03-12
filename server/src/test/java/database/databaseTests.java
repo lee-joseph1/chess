@@ -61,7 +61,7 @@ public class databaseTests {
 
     }
 
-    @Test
+    @Test //passes
     public void passCreateAuth() {
         String token = "validToken";
         AuthData authData = new AuthData(token, "validUsername");
