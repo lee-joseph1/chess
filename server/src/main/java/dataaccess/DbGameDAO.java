@@ -107,12 +107,12 @@ public class DbGameDAO implements GameDAO{
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS gameData (
-            'id' int NOT NULL AUTO_INCREMENT,
-            'gameName' varchar(256) NOT NULL,
-            'whiteUsername' VARCHAR(256),
-            'blackUsername' VARCHAR(256),
-            'json' TEXT DEFAULT NULL,
-            PRIMARY KEY('id'))
+            `id` int NOT NULL AUTO_INCREMENT,
+            `gameName` varchar(256) NOT NULL,
+            `whiteUsername` VARCHAR(256),
+            `blackUsername` VARCHAR(256),
+            `json` TEXT DEFAULT NULL,
+            PRIMARY KEY(`id`))
             """
     };
 
@@ -125,7 +125,7 @@ public class DbGameDAO implements GameDAO{
                 }
             }
         } catch (DataAccessException | SQLException ex) {
-            throw new RuntimeException("Error creating database");
+            throw new RuntimeException("Error creating game database");
         }
     }
 

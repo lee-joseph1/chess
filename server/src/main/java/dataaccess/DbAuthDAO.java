@@ -80,9 +80,9 @@ public class DbAuthDAO implements AuthDAO {
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS authData (
-            'token' VARCHAR(255) NOT NULL,
-            'username' VARCHAR(255) NOT NULL,
-            PRIMARY KEY ('token'))
+            `token` VARCHAR(255) NOT NULL,
+            `username` VARCHAR(255) NOT NULL,
+            PRIMARY KEY (`token`))
             """
     };
 
@@ -95,7 +95,7 @@ public class DbAuthDAO implements AuthDAO {
                 }
             }
     } catch (DataAccessException | SQLException ex) {
-            throw new RuntimeException("Error creating database");
+            throw new RuntimeException("Error creating auth database");
         }
     }
 

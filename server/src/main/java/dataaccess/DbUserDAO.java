@@ -60,23 +60,23 @@ public class DbUserDAO implements UserDAO {
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS userData (
-            'username' VARCHAR(256) NOT NULL,
-            'password' VARCHAR(256) NOT NULL,
-            'email' VARCHAR(256) NOT NULL,
-            PRIMARY KEY('username'))
+            `username` VARCHAR(256) NOT NULL,
+            `password` VARCHAR(256) NOT NULL,
+            `email` VARCHAR(256) NOT NULL,
+            PRIMARY KEY(`username`))
             """
     };
 
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            for (var stmt : createStatements) {
+            for (String stmt : createStatements) {
                 try (var ps = conn.prepareStatement(stmt)) {
                     ps.executeUpdate();
                 }
             }
         } catch (DataAccessException | SQLException ex) {
-            throw new RuntimeException("Error creating database");
+            throw new RuntimeException("Error creating user database");
         }
     }
 
