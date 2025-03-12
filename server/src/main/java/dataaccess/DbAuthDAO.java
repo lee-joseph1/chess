@@ -101,7 +101,7 @@ public class DbAuthDAO implements AuthDAO {
 
     private void executeUpdate(String stmt, Object... params) {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(stmt)) {
+            try (var ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i + 1, p);
