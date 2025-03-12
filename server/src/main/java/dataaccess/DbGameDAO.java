@@ -20,13 +20,19 @@ public class DbGameDAO implements GameDAO{
     public void createGame(GameData gameData) {
         var stmt = "INSERT INTO gameData (gameName, whiteUsername, blackUsername, json) VALUES (?,?,?,?)";
         var json = new Gson().toJson(gameData);
-        String whiteUsername = gameData.whiteUsername();
-        if (whiteUsername == null) {
+        String whiteUsername;
+        String blackUsername;
+        if (gameData.whiteUsername() == null) {
             whiteUsername = "";
         }
-        String blackUsername = gameData.blackUsername();
-        if (blackUsername == null) {
+        else {
+            whiteUsername = gameData.whiteUsername();
+        }
+        if (gameData.blackUsername() == null) {
             blackUsername = "";
+        }
+        else {
+            blackUsername = gameData.blackUsername();
         }
         try {
             executeUpdate(stmt, gameData.gameName(), whiteUsername, blackUsername, json);
@@ -50,7 +56,7 @@ public class DbGameDAO implements GameDAO{
     @Override
     public GameData getGameByID(Integer gameID) {
         try (var conn = DatabaseManager.getConnection()) {
-            var stmt = "SELECT * FROM gameData WHERE gameID = ?";
+            var stmt = "SELECT * FROM gameData WHERE id = ?";
             try (var ps = conn.prepareStatement(stmt)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
@@ -68,7 +74,7 @@ public class DbGameDAO implements GameDAO{
     @Override
     public void updateGame(Integer gameID, GameData gameData) {
         var stmt = "UPDATE gameData SET gameName = ?, whiteUsername = ?, " +
-                "blackUsername = ?, json = ? WHERE gameID = ?";
+                "blackUsername = ?, json = ? WHERE id = ?";
         var json = new Gson().toJson(gameData);
         String whiteUsername = gameData.whiteUsername();
         if (whiteUsername == null) {
@@ -90,7 +96,7 @@ public class DbGameDAO implements GameDAO{
     public ArrayList<GameData> getAllGames() {
         ArrayList<GameData> games = new ArrayList<>();
         try (var conn = DatabaseManager.getConnection()) {
-            var stmt = "SELECT * FROM gameData ORDER BY gameID";
+            var stmt = "SELECT * FROM gameData ORDER BY id";
             try (var ps = conn.prepareStatement(stmt)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {

@@ -1,8 +1,10 @@
 package database;
 
+import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
+import model.GameData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -130,7 +132,13 @@ public class databaseTests {
 
     @Test
     public void passCreateGame() {
-
+        gameDAO.createGame(new GameData(300, "white",
+                null, "name", new ChessGame()));
+        GameData result = gameDAO.getGameByID(300);
+        assertNotNull(result);
+        assertEquals("white", result.whiteUsername());
+        assertEquals("name", result.gameName());
+        assertNull(result.blackUsername());
     }
 
     @Test
