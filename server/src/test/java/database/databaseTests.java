@@ -2,6 +2,7 @@ package database;
 
 import dataaccess.*;
 import model.AuthData;
+import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,34 +32,48 @@ public class databaseTests {
         gameDAO.clear();
     }
 
-    @Test
+    @Test //passes
     public void passCreateUser() {
-
+        UserData user = new UserData("name", "pass", "mail");
+        userDAO.createUser(user);
+        UserData result = userDAO.getUserByUsername("name");
+        assertNotNull(result);
+        assertEquals("name", result.username());
+        assertEquals("pass", result.password());
+        assertEquals("mail", result.email());
     }
 
     @Test
     public void failCreateUser() {
-
+        UserData user = new UserData("name", "pass", null);
+        assertThrows(RuntimeException.class, () -> userDAO.createUser(user));
     }
 
-    @Test
+    @Test //passes... looks totally different to the create test
     public void passGetUser() {
-
+        UserData user = new UserData("totallydifferentname", "pass", "mail");
+        userDAO.createUser(user);
+        UserData result = userDAO.getUserByUsername("totallydifferentname");
+        assertNotNull(result);
+        assertEquals("totallydifferentname", result.username());
+        assertEquals("pass", result.password());
+        assertEquals("mail", result.email());
     }
 
-    @Test
+    @Test //passes
     public void failGetUser() {
-
+        UserData result = userDAO.getUserByUsername("invalidUsername");
+        assertNull(result);
     }
 
-    @Test
+    @Test //passes
     public void passClearUser() {
-
-    }
-
-    @Test
-    public void failClearUser() {
-
+        UserData user = new UserData("name", "pass", "mail");
+        userDAO.createUser(user);
+        UserData result = userDAO.getUserByUsername("name");
+        assertNotNull(result);
+        userDAO.clear();
+        assertNull(userDAO.getUserByUsername("name"));
     }
 
     @Test //passes
