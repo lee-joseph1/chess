@@ -6,7 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class databaseTests {
     private static DbAuthDAO authDAO;
@@ -71,24 +71,33 @@ public class databaseTests {
         assertEquals("validUsername", result.username());
     }
 
-    @Test
+    @Test //passes
     public void failCreateAuth() {
-
+        AuthData authData = new AuthData(null, "invalidUsername");
+        assertThrows(RuntimeException.class, () -> authDAO.createAuth(authData));
     }
 
-    @Test
+    @Test //passes
     public void passGetAuth() {
-
+        authDAO.createAuth(new AuthData("validToken", "validUsername"));
+        AuthData result = authDAO.getAuthByToken("validToken");
+        assertEquals("validUsername", result.username());
+        assertEquals("validToken", result.authToken());
     }
 
-    @Test
+    @Test //passes
     public void failGetAuth() {
-
+        AuthData result = authDAO.getAuthByToken("invalidToken");
+        assertNull(result);
     }
 
     @Test
     public void passDeleteAuth() {
-
+        authDAO.createAuth(new AuthData("validToken", "validUsername"));
+        AuthData result = authDAO.getAuthByToken("validToken");
+        assertNotNull(result);
+        authDAO.deleteAuth(result);
+        assertNull(authDAO.getAuthByToken("validToken"));
     }
 
     @Test
@@ -98,11 +107,6 @@ public class databaseTests {
 
     @Test
     public void passClearAuth() {
-
-    }
-
-    @Test
-    public void failClearAuth() {
 
     }
 
@@ -128,11 +132,6 @@ public class databaseTests {
 
     @Test
     public void passClearGame() {
-
-    }
-
-    @Test
-    public void failClearGame() {
 
     }
 

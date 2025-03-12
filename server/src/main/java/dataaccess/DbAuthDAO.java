@@ -65,7 +65,7 @@ public class DbAuthDAO implements AuthDAO {
     public void deleteAuth(AuthData authData) {
         try {
             var stmt = "DELETE FROM authData WHERE token = ?";
-            executeUpdate(stmt);
+            executeUpdate(stmt, authData.authToken());
         }
         catch (Exception ex) {
             throw new RuntimeException("Error deleting auth: " + ex.getMessage());
