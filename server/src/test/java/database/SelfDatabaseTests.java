@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class databaseTests {
+public class SelfDatabaseTests {
     private static DbAuthDAO authDAO;
     private static DbUserDAO userDAO;
     private static DbGameDAO gameDAO;
