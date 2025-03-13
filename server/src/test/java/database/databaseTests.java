@@ -141,43 +141,45 @@ public class databaseTests {
         assertNull(result.blackUsername());
     }
 
-    @Test
+    @Test //well this one definitely passes... ok thats awkward i can't even fail properly
     public void failCreateGame() {
-
+        gameDAO.createGame(new GameData(1000, null, null, null, null));
+        GameData result = gameDAO.getGameByID(1000);
+        assertNull(result);
     }
 
     @Test
     public void passGetGame() {
-
+        //haha good one i aint tryin this yet
     }
 
     @Test
     public void failGetGame() {
-
+        //samesies
     }
 
     @Test
     public void passClearGame() {
-
+        //bro i cant create the games
     }
 
     @Test
     public void passUpdateGame() {
-
+        //no can do
     }
 
     @Test
     public void failUpdateGame() {
-
+        //soon i promise ill get this figured out. i think
     }
 
     @Test
     public void passGetAllGames() {
-
+        //cant get one game let alone all
     }
 
     @Test
     public void failGetAllGames() {
-
+        //i certainly do fail to get all games
     }
 }
