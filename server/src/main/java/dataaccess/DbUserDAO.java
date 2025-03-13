@@ -59,7 +59,8 @@ public class DbUserDAO implements UserDAO {
         }
     }
 
-    boolean verifyUser(String username, String providedClearTextPassword) {
+    @Override
+    public boolean verifyUser(String username, String providedClearTextPassword) {
         UserData userData = getUserByUsername(username);
         if (userData != null) {
             String hashedPassword = userData.password();

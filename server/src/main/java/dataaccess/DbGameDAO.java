@@ -65,6 +65,9 @@ public class DbGameDAO implements GameDAO{
 
     @Override
     public void updateGame(Integer gameID, GameData gameData) {
+        if (gameData == null) {
+            throw new RuntimeException("game data cannot be null");
+        }
         var stmt = "UPDATE gameData SET gameName = ?, whiteUsername = ?, " +
                 "blackUsername = ?, json = ? WHERE id = ?";
         var json = new Gson().toJson(gameData.game());

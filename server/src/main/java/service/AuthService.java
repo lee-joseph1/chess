@@ -25,7 +25,7 @@ public class AuthService {
             throw new IllegalArgumentException("bad request");
         }
         UserData user = userDao.getUserByUsername(request.username());
-        if (user == null || !verifyUser(request.username(), request.password())) {//!(user.password().equals(request.password()))) {
+        if (user == null || !userDao.verifyUser(request.username(), request.password())) {//!(user.password().equals(request.password()))) {
             throw new DataAccessException("Username/Password is incorrect");
         }
         String authToken = authDao.generateUniqueToken();
@@ -34,14 +34,14 @@ public class AuthService {
         return new LoginResponse(request.username(), authToken);
     }
 
-    boolean verifyUser(String username, String providedClearTextPassword) {
-        UserData userData = userDao.getUserByUsername(username);
-        if (userData != null) {
-            String hashedPassword = userData.password();
-            return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
-        }
-        return false;
-    }
+//    boolean verifyUser(String username, String providedClearTextPassword) {
+//        UserData userData = userDao.getUserByUsername(username);
+//        if (userData != null) {
+//            String hashedPassword = userData.password();
+//            return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
+//        }
+//        return false;
+//    }
 
     public LogoutResponse logout(LogoutRequest request) throws DataAccessException {
         if (request.authToken() == null) {
