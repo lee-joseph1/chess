@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,9 +20,10 @@ public class DbUserDAO implements UserDAO {
         var stmt = "INSERT INTO userData (username, password, email) VALUES (?, ?, ?)";
         var username = user.username();
         var password = user.password();
+        var hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         var email = user.email();
         try {
-            executeUpdate(stmt, username, password, email);
+            executeUpdate(stmt, username, hashPassword, email);
         }
         catch (Exception ex) {
             throw new RuntimeException("Error creating user: " + ex.getMessage());
@@ -55,6 +57,15 @@ public class DbUserDAO implements UserDAO {
         catch (Exception ex) {
             throw new RuntimeException("Error clearing user: " + ex.getMessage());
         }
+    }
+
+    boolean verifyUser(String username, String providedClearTextPassword) {
+        UserData userData = getUserByUsername(username);
+        if (userData != null) {
+            String hashedPassword = userData.password();
+            return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
+        }
+        return false;
     }
 
     private final String[] createStatements = {

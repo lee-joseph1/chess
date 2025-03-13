@@ -74,7 +74,16 @@ public class DbAuthDAO implements AuthDAO {
 
     @Override
     public String generateUniqueToken() {
-        return UUID.randomUUID().toString();
+        String token = UUID.randomUUID().toString();
+        try {
+            var stmt = "SELECT * FROM authData WHERE token = " + token;
+            executeUpdate(stmt);
+
+        }
+        catch (Exception ex) {
+            throw new RuntimeException("Error generating unique token: " + ex.getMessage());
+        }
+        return token;
     }
 
     private final String[] createStatements = {
