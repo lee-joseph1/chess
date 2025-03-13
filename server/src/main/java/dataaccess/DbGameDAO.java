@@ -14,33 +14,16 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class DbGameDAO implements GameDAO{
-    private int idCounter = 1000;
     public DbGameDAO() throws DataAccessException {
         configureDatabase();
-    }
-
-    public static int genID() {
-        try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT MAX(id) FROM gameData";
-            try (var ps = conn.prepareStatement(statement)) {
-                try (var rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getInt(1) + 1;
-                    }
-                }
-            }
-        } catch (DataAccessException | SQLException ex) {
-            throw new RuntimeException("Error creating id: " + ex.getMessage());
-        }
-        return 1001;
     }
 
     @Override
     public int createGame(GameData gameData) {
         var stmt = "INSERT INTO gameData (gameName, whiteUsername, blackUsername, json) VALUES (?,?,?,?)";
-        var json = new Gson().toJson(gameData);
-        String whiteUsername = gameData.whiteUsername() == null ? "" : gameData.whiteUsername();
-        String blackUsername = gameData.blackUsername() == null ? "" : gameData.blackUsername();
+        var json = new Gson().toJson(gameData.game());
+        String whiteUsername = gameData.whiteUsername();// == null ? "": gameData.whiteUsername();
+        String blackUsername = gameData.blackUsername();// == null ? "": gameData.blackUsername();
         try {
             return executeUpdate(stmt, gameData.gameName(), whiteUsername, blackUsername, json);
         }
@@ -68,7 +51,9 @@ public class DbGameDAO implements GameDAO{
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return new Gson().fromJson(rs.getString("json"), GameData.class);
+                        return new GameData(gameID, rs.getString("whiteUsername"),
+                                rs.getString("blackUsername"), rs.getString("gameName"),
+                                new Gson().fromJson(rs.getString("json"), ChessGame.class));
                     }
                 }
             }
@@ -82,15 +67,9 @@ public class DbGameDAO implements GameDAO{
     public void updateGame(Integer gameID, GameData gameData) {
         var stmt = "UPDATE gameData SET gameName = ?, whiteUsername = ?, " +
                 "blackUsername = ?, json = ? WHERE id = ?";
-        var json = new Gson().toJson(gameData);
-        String whiteUsername = gameData.whiteUsername();
-        if (whiteUsername == null) {
-            whiteUsername = "";
-        }
-        String blackUsername = gameData.blackUsername();
-        if (blackUsername == null) {
-            blackUsername = "";
-        }
+        var json = new Gson().toJson(gameData.game());
+        String whiteUsername = gameData.whiteUsername();// == null ? "": gameData.whiteUsername();
+        String blackUsername = gameData.blackUsername();// == null ? "": gameData.blackUsername();
         try {
             executeUpdate(stmt, gameData.gameName(), whiteUsername, blackUsername, json, gameID);
         }
@@ -103,11 +82,13 @@ public class DbGameDAO implements GameDAO{
     public ArrayList<GameData> getAllGames() {
         ArrayList<GameData> games = new ArrayList<>();
         try (var conn = DatabaseManager.getConnection()) {
-            var stmt = "SELECT * FROM gameData ORDER BY id";
+            var stmt = "SELECT * FROM gameData";
             try (var ps = conn.prepareStatement(stmt)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        var gameData = new Gson().fromJson(rs.getString("json"), GameData.class);
+                        var gameData = new GameData(rs.getInt("id"), rs.getString("whiteUsername"),
+                                rs.getString("blackUsername"), rs.getString("gameName"),
+                                new Gson().fromJson(rs.getString("json"), ChessGame.class));
                         games.add(gameData);
                     }
                 }

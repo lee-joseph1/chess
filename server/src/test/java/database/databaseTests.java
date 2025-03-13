@@ -8,6 +8,9 @@ import model.GameData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,7 +44,6 @@ public class databaseTests {
         UserData result = userDAO.getUserByUsername("name");
         assertNotNull(result);
         assertEquals("name", result.username());
-        assertEquals("pass", result.password());
         assertEquals("mail", result.email());
     }
 
@@ -58,7 +60,7 @@ public class databaseTests {
         UserData result = userDAO.getUserByUsername("totallydifferentname");
         assertNotNull(result);
         assertEquals("totallydifferentname", result.username());
-        assertEquals("pass", result.password());
+        assertTrue(BCrypt.checkpw("pass", result.password()));
         assertEquals("mail", result.email());
     }
 
@@ -143,29 +145,43 @@ public class databaseTests {
 
     @Test //passes
     public void failCreateGame() {
-        int gameID = gameDAO.createGame(new GameData(1000, null, null, "name", new ChessGame()));
         GameData result = gameDAO.getGameByID(-1);
         assertNull(result);
     }
 
-    @Test
+    @Test //passes
     public void passGetGame() {
-        //haha good one i aint tryin this yet
+        int gameID = gameDAO.createGame(new GameData(0, null,
+                "white", "name", new ChessGame()));
+        GameData result = gameDAO.getGameByID(gameID);
+        assertNotNull(result);
+        assertEquals("name", result.gameName());
     }
 
-    @Test
+    @Test //passes
     public void failGetGame() {
-        //samesies
+        assertThrows(RuntimeException.class, () -> gameDAO.getGameByID(null));
     }
 
-    @Test
+    @Test //passes
     public void passClearGame() {
-        //bro i cant create the games
+        int gameID = gameDAO.createGame(new GameData(300, "white",
+                null, "name", new ChessGame()));
+        GameData result = gameDAO.getGameByID(gameID);
+        assertNotNull(result);
+        gameDAO.clear();
+        assertNull(gameDAO.getGameByID(gameID));
     }
 
-    @Test
+    @Test //passes
     public void passUpdateGame() {
-        //no can do
+        int gameID = gameDAO.createGame(new GameData(0, "white",
+                null, "name", new ChessGame()));
+        GameData result = gameDAO.getGameByID(gameID);
+        assertNull(result.blackUsername());
+        gameDAO.updateGame(gameID, new GameData(gameID, result.whiteUsername(), "black", result.gameName(), result.game()));
+        GameData result2 = gameDAO.getGameByID(gameID);
+        assertEquals("black", result2.blackUsername());
     }
 
     @Test
@@ -174,12 +190,24 @@ public class databaseTests {
     }
 
     @Test
-    public void passGetAllGames() {
-        //cant get one game let alone all
+    public void passGetAllGames() { //passes
+        int gameID = gameDAO.createGame(new GameData(0, "white",
+                null, "name", new ChessGame()));
+        GameData result = gameDAO.getGameByID(gameID);
+        assertNotNull(result);
+        int gameID2 = gameDAO.createGame(new GameData(1, "white",
+                null, "name2", new ChessGame()));
+        GameData result2 = gameDAO.getGameByID(gameID2);
+        assertNotNull(result2);
+        ArrayList<GameData> games = gameDAO.getAllGames();
+        assertNotNull(games);
+        assert(games.contains(result));
     }
 
-    @Test
+    @Test //passes
     public void failGetAllGames() {
-        //i certainly do fail to get all games
+        ArrayList<GameData> games = gameDAO.getAllGames();
+        assertNotNull(games);
+        assert(games.isEmpty());
     }
 }

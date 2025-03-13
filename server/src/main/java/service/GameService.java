@@ -36,7 +36,8 @@ public class GameService {
     }
 
     public JoinResponse join(JoinRequest request, String authToken) throws Exception {
-        if (request.gameID() <= 1000 || request.playerColor() == null) {
+        //if (request.gameID() <= 1000 || request.playerColor() == null) {
+        if (request.playerColor() == null) {
             throw new IllegalArgumentException("bad request");
         }
         GameData gameData = gameDao.getGameByID(request.gameID());

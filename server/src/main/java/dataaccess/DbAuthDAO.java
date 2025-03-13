@@ -22,8 +22,9 @@ public class DbAuthDAO implements AuthDAO {
     @Override//addPet
     public void createAuth(AuthData authData) {
         var stmt = "INSERT INTO authData (token, username) VALUES (?, ?)";
-        var username = authData.username();
-        var token = authData.authToken();
+        String username = authData.username();
+        String token = authData.authToken();
+        //String token = generateUniqueToken();
         try {
             executeUpdate(stmt, token, username);
         }
@@ -76,12 +77,12 @@ public class DbAuthDAO implements AuthDAO {
     public String generateUniqueToken() {
         String token = UUID.randomUUID().toString();
         try {
-            var stmt = "SELECT * FROM authData WHERE token = " + token;
-            executeUpdate(stmt);
-            //if get user(token) not null, regen
+            while (getAuthByToken(token) != null) {
+                token = UUID.randomUUID().toString();
+            }
         }
-        catch (Exception ex) {
-            throw new RuntimeException("Error generating unique token: " + ex.getMessage());
+        catch (Exception ex){
+            throw new RuntimeException("Error generating token: " + ex.getMessage());
         }
         return token;
     }
