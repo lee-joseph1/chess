@@ -97,8 +97,12 @@ public class DbUserDAO implements UserDAO {
             try (var ps = conn.prepareStatement(stmt)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param == null) ps.setNull(i + 1, NULL);
-                    else if (param instanceof String p) ps.setString(i + 1, p);
+                    if (param == null)  {
+                        ps.setNull(i + 1, NULL);
+                    }
+                    else if (param instanceof String p) {
+                        ps.setString(i + 1, p);
+                    }
                 }
                 ps.executeUpdate();
             }

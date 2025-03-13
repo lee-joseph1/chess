@@ -113,8 +113,12 @@ public class DbAuthDAO implements AuthDAO {
             try (var ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS)) {
                 for (var j = 0; j < params.length; j++) {
                     var param = params[j];
-                    if (param instanceof String p) ps.setString(j + 1, p);
-                    else if (param == null) ps.setNull(j + 1, NULL);
+                    if (param instanceof String p) {
+                        ps.setString(j + 1, p);
+                    }
+                    else if (param == null) {
+                        ps.setNull(j + 1, NULL);
+                    }
                 }
                 ps.executeUpdate();
                 var rs = ps.getGeneratedKeys();
