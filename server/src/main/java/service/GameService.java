@@ -40,6 +40,9 @@ public class GameService {
         if (request.playerColor() == null) {
             throw new IllegalArgumentException("bad request");
         }
+        if (request.gameID() <= 0) {
+            throw new IllegalArgumentException("bad request");
+        }
         GameData gameData = gameDao.getGameByID(request.gameID());
         String playerColor = request.playerColor().toUpperCase();
         if ((playerColor.equals("WHITE") && gameData.whiteUsername() != null) ||

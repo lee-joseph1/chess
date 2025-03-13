@@ -186,7 +186,12 @@ public class databaseTests {
 
     @Test
     public void failUpdateGame() {
-        //soon i promise ill get this figured out. i think
+        int gameID = gameDAO.createGame(new GameData(0, "white",
+                "filled", "name", new ChessGame()));
+        GameData result = gameDAO.getGameByID(gameID);
+        gameDAO.updateGame(gameID, new GameData(gameID, result.whiteUsername(), "black", result.gameName(), result.game()));
+        GameData result2 = gameDAO.getGameByID(gameID);
+        assertEquals("black", result2.blackUsername());
     }
 
     @Test

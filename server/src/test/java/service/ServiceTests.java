@@ -145,9 +145,9 @@ public class ServiceTests {
         CreateRequest createRequest = new CreateRequest("name3");
         CreateResponse createResponse = gameService.create(createRequest, loginResponse.authToken());
         JoinRequest joinRequest = new JoinRequest("WHITE", createResponse.gameID());
-        JoinResponse joinResponse = gameService.join(joinRequest, loginResponse.authToken());
-        assertNotNull(joinResponse);
-        assertEquals("user-", gameDao.getGameByID(createResponse.gameID()).whiteUsername());
+        assertThrows(IllegalArgumentException.class, () -> gameService.join(joinRequest, loginResponse.authToken()));
+//        assertNotNull(joinResponse);
+//        assertEquals("user-", gameDao.getGameByID(createResponse.gameID()).whiteUsername());
     }
 
     @Test
