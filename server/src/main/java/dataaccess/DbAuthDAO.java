@@ -18,7 +18,6 @@ public class DbAuthDAO implements AuthDAO {
         configureDatabase();
     }
 
-
     @Override//addPet
     public void createAuth(AuthData authData) {
         var stmt = "INSERT INTO authData (token, username) VALUES (?, ?)";
