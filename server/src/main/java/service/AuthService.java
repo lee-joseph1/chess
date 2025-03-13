@@ -34,15 +34,6 @@ public class AuthService {
         return new LoginResponse(request.username(), authToken);
     }
 
-//    boolean verifyUser(String username, String providedClearTextPassword) {
-//        UserData userData = userDao.getUserByUsername(username);
-//        if (userData != null) {
-//            String hashedPassword = userData.password();
-//            return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
-//        }
-//        return false;
-//    }
-
     public LogoutResponse logout(LogoutRequest request) throws DataAccessException {
         if (request.authToken() == null) {
             throw new IllegalArgumentException("bad request");
