@@ -14,13 +14,30 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class DbGameDAO implements GameDAO{
+    private int idCounter = 1000;
     public DbGameDAO() throws DataAccessException {
         configureDatabase();
     }
 
+    public static int genID() {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT MAX(id) FROM gameData";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1) + 1;
+                    }
+                }
+            }
+        } catch (DataAccessException | SQLException ex) {
+            throw new RuntimeException("Error creating id: " + ex.getMessage());
+        }
+        return 1001;
+    }
+
     @Override
     public void createGame(GameData gameData) {
-        var stmt = "INSERT INTO gameData (id, whiteUsername, blackUsername, gameName, json) VALUES (?,?,?,?,?)";
+        var stmt = "INSERT INTO gameData (gameName, whiteUsername, blackUsername, json) VALUES (?,?,?,?)";
         var json = new Gson().toJson(gameData);
         String whiteUsername = gameData.whiteUsername() == null ? "" : gameData.whiteUsername();
         String blackUsername = gameData.blackUsername() == null ? "" : gameData.blackUsername();
