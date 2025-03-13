@@ -6,6 +6,7 @@ import model.GameData;
 import model.UserData;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -131,17 +132,7 @@ public class DbGameDAO implements GameDAO{
     private int executeUpdate(String stmt, Object... params) {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(stmt, RETURN_GENERATED_KEYS)) {
-                for (int i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    switch (param) {
-                        case String p -> ps.setString(i + 1, p);
-                        case Integer p -> ps.setInt(i + 1, p);
-                        case ChessGame p -> ps.setString(i + 1, new Gson().toJson(p));
-                        case null -> ps.setNull(i + 1, NULL);
-                        default -> {
-                        }
-                    }
-                }
+                setParams(params, ps);
                 ps.executeUpdate();
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
@@ -151,6 +142,20 @@ public class DbGameDAO implements GameDAO{
             }
         } catch (DataAccessException | SQLException ex) {
             throw new RuntimeException("Failed to update database");
+        }
+    }
+
+    private static void setParams(Object[] params, PreparedStatement ps) throws SQLException {
+        for (int i = 0; i < params.length; i++) {
+            var param = params[i];
+            switch (param) {
+                case String p -> ps.setString(i + 1, p);
+                case Integer p -> ps.setInt(i + 1, p);
+                case ChessGame p -> ps.setString(i + 1, new Gson().toJson(p));
+                case null -> ps.setNull(i + 1, NULL);
+                default -> {
+                }
+            }
         }
     }
 }
