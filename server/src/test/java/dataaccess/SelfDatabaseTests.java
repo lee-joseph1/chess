@@ -1,7 +1,6 @@
-package database;
+package dataaccess;
 
 import chess.ChessGame;
-import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import model.GameData;
@@ -214,5 +213,21 @@ public class SelfDatabaseTests {
         ArrayList<GameData> games = gameDAO.getAllGames();
         assertNotNull(games);
         assert(games.isEmpty());
+    }
+
+    @Test
+    public void passVerifyUser() {
+        UserData user = new UserData("name", "pass", "mail");
+        userDAO.createUser(user);
+        UserData result = userDAO.getUserByUsername("name");
+        assertNotNull(result);
+        assert(userDAO.verifyUser("name", "pass"));
+    }
+
+    @Test
+    public void failVerifyUser() {
+        UserData user = new UserData("name", "pass", "mail");
+        userDAO.createUser(user);
+        assertFalse(userDAO.verifyUser("name", "fakePW"));
     }
 }
