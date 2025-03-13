@@ -30,10 +30,8 @@ public class GameService {
         if (noAuth(authToken)) {
             throw new DataAccessException("unauthorized");
         }
-        int gameID = currentGameID;
-        currentGameID++;
-        GameData gameData = new GameData(gameID, null, null, request.gameName(), new ChessGame());
-        gameDao.createGame(gameData);
+        GameData gameData = new GameData(0, null, null, request.gameName(), new ChessGame());
+        int gameID = gameDao.createGame(gameData);
         return new CreateResponse(gameID);
     }
 

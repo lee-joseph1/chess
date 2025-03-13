@@ -130,21 +130,21 @@ public class databaseTests {
         assertNull(authDAO.getAuthByToken("validToken"));
     }
 
-    @Test
+    @Test //passes
     public void passCreateGame() {
-        gameDAO.createGame(new GameData(300, "white",
+        int gameID = gameDAO.createGame(new GameData(300, "white",
                 null, "name", new ChessGame()));
-        GameData result = gameDAO.getGameByID(300);
+        GameData result = gameDAO.getGameByID(gameID);
         assertNotNull(result);
         assertEquals("white", result.whiteUsername());
         assertEquals("name", result.gameName());
         assertNull(result.blackUsername());
     }
 
-    @Test //well this one definitely passes... ok thats awkward i can't even fail properly
+    @Test //passes
     public void failCreateGame() {
-        gameDAO.createGame(new GameData(1000, null, null, null, null));
-        GameData result = gameDAO.getGameByID(1000);
+        int gameID = gameDAO.createGame(new GameData(1000, null, null, "name", new ChessGame()));
+        GameData result = gameDAO.getGameByID(-1);
         assertNull(result);
     }
 

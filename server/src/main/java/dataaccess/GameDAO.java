@@ -4,7 +4,7 @@ import model.GameData;
 import java.util.ArrayList;
 
 public interface GameDAO {
-    void createGame(GameData gameData);
+    int createGame(GameData gameData);
     void clear();
     GameData getGameByID(Integer gameID);
     void updateGame(Integer gameID, GameData gameData);

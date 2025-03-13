@@ -78,7 +78,7 @@ public class DbAuthDAO implements AuthDAO {
         try {
             var stmt = "SELECT * FROM authData WHERE token = " + token;
             executeUpdate(stmt);
-
+            //if get user(token) not null, regen
         }
         catch (Exception ex) {
             throw new RuntimeException("Error generating unique token: " + ex.getMessage());

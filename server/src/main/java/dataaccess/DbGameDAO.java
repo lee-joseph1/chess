@@ -36,13 +36,13 @@ public class DbGameDAO implements GameDAO{
     }
 
     @Override
-    public void createGame(GameData gameData) {
+    public int createGame(GameData gameData) {
         var stmt = "INSERT INTO gameData (gameName, whiteUsername, blackUsername, json) VALUES (?,?,?,?)";
         var json = new Gson().toJson(gameData);
         String whiteUsername = gameData.whiteUsername() == null ? "" : gameData.whiteUsername();
         String blackUsername = gameData.blackUsername() == null ? "" : gameData.blackUsername();
         try {
-            executeUpdate(stmt, gameData.gameName(), whiteUsername, blackUsername, json);
+            return executeUpdate(stmt, gameData.gameName(), whiteUsername, blackUsername, json);
         }
         catch (Exception ex) {
             throw new RuntimeException("Error creating game: " + ex.getMessage());
@@ -144,7 +144,7 @@ public class DbGameDAO implements GameDAO{
         }
     }
 
-    private void executeUpdate(String stmt, Object... params) {
+    private int executeUpdate(String stmt, Object... params) {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(stmt, RETURN_GENERATED_KEYS)) {
                 for (int i = 0; i < params.length; i++) {
@@ -157,8 +157,9 @@ public class DbGameDAO implements GameDAO{
                 ps.executeUpdate();
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
-                    rs.getInt(1);
-                } //put back the weird stuff i didnt understand in petshop hoping it solves this
+                    return rs.getInt(1);
+                }
+                return 0;
             }
         } catch (DataAccessException | SQLException ex) {
             throw new RuntimeException("Failed to update database");
