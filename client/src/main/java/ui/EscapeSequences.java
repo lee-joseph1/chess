@@ -64,3 +64,5 @@ public class EscapeSequences {
     public static String moveCursorToLocation(int x, int y) { return UNICODE_ESCAPE + "[" + y + ";" + x + "H"; }
 }
 //DESIRED COLORSCHEME: see ur silly lil drawing bro
+//\u001b[38;2;<r>;<g>;<b>m → Set text color
+//\u001b[48;2;<r>;<g>;<b>m → Set background color
