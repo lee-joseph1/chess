@@ -1,8 +1,7 @@
 package ui;
 
 import model.AuthData;
-
-import java.io.IOException;
+import server.ServerFacade;
 
 public class ChessClient {
     private final ServerFacade facade;
@@ -13,13 +12,14 @@ public class ChessClient {
         facade = new ServerFacade(serverURL);
     }
 
-    public void eval(String cmd) throws IOException {
+    public String findCommand(String initCommand) throws Exception {
+        return eval(initCommand, null);
+    }
+
+    public String eval(String cmd, String[] args) throws Exception {
         String RED = EscapeSequences.SET_TEXT_COLOR_RED;
         String YELLOW = EscapeSequences.SET_TEXT_COLOR_YELLOW;
         String RESET = EscapeSequences.RESET_TEXT_COLOR;
-        String[] params = cmd.split("\\s+", 2);
-        String command = params[0];
-        String args = (params.length > 1) ? params[1]:"";
         if (state == State.SIGNEDOUT) {
             //help, register, login
             switch (cmd) {
@@ -30,25 +30,23 @@ public class ChessClient {
                     System.out.println(RED + "help" + RESET + " - list available commands");
                 }
                 case "register" -> {
-                    String[] registerArgs = args.split("\\s+");
-                    if (registerArgs.length != 3) {
+                    if (args.length != 3) {
                         System.out.println(RED + "please input a username, pasword, and email");
+                        throw new Exception("Error: bad input for register");
                     } else {
-                        auth = facade.register(registerArgs[0], registerArgs[1], registerArgs[2]);
-                        if (auth.authToken() != null) {
-                            state = State.SIGNEDIN;
-                        }
+                        auth = facade.register(args);
+                        state = State.SIGNEDIN;
+                        return "user " + auth.username() + " registered and logged in";
                     }
                 }
                 case "login" -> {
-                    String[] loginArgs = args.split("\\s+");
-                    if (loginArgs.length != 2) {
+                    if (args.length != 2) {
                         System.out.println(RED + "please input a username and password");
+                        throw new Exception("Error: bad input for login");
                     } else {
-                        auth = facade.Login(loginArgs[0], loginArgs[1]);
-                        if (auth.authToken() != null) {
-                            state = State.SIGNEDIN;
-                        }
+                        auth = facade.Login(args);
+                        state = State.SIGNEDIN;
+                        return "user " + auth.username() + " logged in";
                     }
                 }
             }
@@ -56,5 +54,6 @@ public class ChessClient {
         else {
             //help, create, join, list, logout
         }
+        return null;
     }
 }
