@@ -12,28 +12,26 @@ public class Repl {
 
     public void run() {
         System.out.println("\uD83D\uDC36 Welcome to the pet store. Sign in to start.");
-        System.out.print(client.help());
 
         Scanner scanner = new Scanner(System.in);
-        var result = "";
+        var line = "";
         String prefix;
         String username;
-        while (!result.equals("quit")) {
+        while (!line.equals("quit")) {
             if (client.state == State.SIGNEDOUT) {
                 prefix = EscapeSequences.SET_TEXT_COLOR_RED + "[LOGGED OUT]" +
                         EscapeSequences.RESET_TEXT_COLOR + " >>> ";
             }
             else {
-                username = result; //figure out how to set actual username
+                username = "user"; //figure out how to set actual username
                 prefix = EscapeSequences.SET_TEXT_COLOR_RED + "[" + username + "]" +
                         EscapeSequences.RESET_TEXT_COLOR + " >>> ";//mb need color for user too
             }
             System.out.print(prefix);
-            String line = scanner.nextLine();
+            line = scanner.nextLine();
 
             try {
-                result = client.eval(line);
-                System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE + result);
+                client.eval(line);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
