@@ -60,6 +60,23 @@ public class ChessClient {
         }
         else {
             //help, create, join, list, logout
+            switch (cmd) {
+                case "help" -> {
+                    System.out.println(RED + "logout " + RESET + " - log out");
+                    System.out.println(RED + "create " + YELLOW + "<GAME_NAME> " + RESET + " - create a new chess game");
+                    System.out.println(RED + "list" + RESET + " - list current games");
+                    System.out.println(RED + "join" + YELLOW + "<GAME_NUMBER> [WHITE|BLACK]" + RESET + " - join game as selected color");
+                    System.out.println(RED + "observe" + YELLOW + "<GAME_NUMBER> " + RESET + " - quit");
+                    System.out.println(RED + "quit" + RESET + " - quit");
+                    System.out.println(RED + "help" + RESET + " - list available commands");
+                    return "helped.";
+                }
+                case "logout" -> {
+                    facade.Logout(auth);
+                    state = State.SIGNEDOUT;
+                    return "user " + auth.username() + " logged out";
+                }
+            }
         }
         return null;
     }

@@ -20,22 +20,28 @@ public class ServerFacade {
     }
     public AuthData register(String[] args) throws Exception {
         UserData user = new UserData(args[0], args[1], args[2]);
-        return this.makeRequest("POST", "/user", user, AuthData.class);
+        return this.makeRequest("POST", "/user", user, AuthData.class, null);
     }
 
     public AuthData Login(String[] args) throws Exception {
         UserData user = new UserData(args[0], args[1], null);
-        return makeRequest("POST", "/session", user, AuthData.class);
+        return makeRequest("POST", "/session", user, AuthData.class, null);
+    }
+
+    public void Logout(AuthData auth) throws Exception {//filler for now
+        makeRequest("DELETE", "/session", null, null, auth);
     }
 
     //logout, createGame, listGames, joinGame
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws Exception {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, AuthData auth) throws Exception {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-
+            if (auth != null) {
+                http.setRequestProperty("authorization", auth.authToken());
+            }
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);

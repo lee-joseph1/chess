@@ -36,8 +36,8 @@ public class ServerFacadeTests {
 
     @Test
     public void registerFail() {
-        //Exception exception = assertThrows(IOException.class, () -> {facade.register(null, "password", "email");});
-        //assertEquals("Error: bad request", exception.getMessage());
+        Exception exception = assertThrows(Exception.class, () -> {facade.register(new String[]{null, "password", "email"});});
+        assertEquals("Error: bad request", exception.getMessage());
 
     }
 

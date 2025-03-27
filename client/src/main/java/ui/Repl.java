@@ -11,20 +11,20 @@ public class Repl {
     }
 
     public void run() {
-        System.out.println("\uD83D\uDC36 Welcome to the pet store. Sign in to start.");
+        System.out.println("Welcome to chess. Sign in to start.");
 
         Scanner scanner = new Scanner(System.in);
         var line = "";
         String prefix;
-        String username;
+        //String username;
         while (!line.equals("quit")) {
             if (client.state == State.SIGNEDOUT) {
                 prefix = EscapeSequences.SET_TEXT_COLOR_RED + "[LOGGED OUT]" +
                         EscapeSequences.RESET_TEXT_COLOR + " >>> ";
             }
             else {
-                username = "user"; //figure out how to set actual username
-                prefix = EscapeSequences.SET_TEXT_COLOR_RED + "[" + username + "]" +
+                //username = "user"; //figure out how to set actual username
+                prefix = EscapeSequences.SET_TEXT_COLOR_RED + "[CHESS]" +
                         EscapeSequences.RESET_TEXT_COLOR + " >>> ";//mb need color for user too
             }
             System.out.print(prefix);
