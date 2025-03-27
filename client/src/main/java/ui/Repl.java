@@ -31,7 +31,8 @@ public class Repl {
             line = scanner.nextLine();
 
             try {
-                client.findCommand(line);
+                String result = client.findCommand(line);
+                System.out.println(result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
