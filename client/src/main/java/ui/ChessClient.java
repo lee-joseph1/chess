@@ -133,6 +133,25 @@ public class ChessClient {
                         return "";
                     }
                 }
+                case "observe" -> {
+                    if (args.length != 1) {
+                        System.out.println(RED + "please choose a game");
+                        //return "error creating game - bad input";
+                        throw new Exception("Error: bad input for observe");
+                    }
+                    ListResponse2 gameList = facade.list(auth);
+                    for (int i = 1; i < gameList.games().size(); i++) {
+                        chessGames.put(i, gameList.games().get(i-1));
+                    } //need to fetch all games again in most recent state
+                    try {
+                        if (Integer.parseInt(args[0]) < 1 || Integer.parseInt(args[0]) > chessGames.size()) {
+                            throw new Exception("Error: invalid game number");
+                        }
+                    } catch (Exception ex) {
+                        throw new Exception("Error: bad input for observe");
+                    }
+                    return "< imagine fetching selected game & printing from white here >";
+                }
             }
         }
         return null;
