@@ -43,7 +43,7 @@ public class Server {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        return 0;
+        return desiredPort;
     }
 
     public void stop() {

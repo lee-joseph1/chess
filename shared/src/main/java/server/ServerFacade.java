@@ -23,12 +23,12 @@ public class ServerFacade {
         return this.makeRequest("POST", "/user", user, AuthData.class, null);
     }
 
-    public AuthData Login(String[] args) throws Exception {
+    public AuthData login(String[] args) throws Exception {
         UserData user = new UserData(args[0], args[1], null);
         return makeRequest("POST", "/session", user, AuthData.class, null);
     }
 
-    public void Logout(AuthData auth) throws Exception {//filler for now
+    public void logout(AuthData auth) throws Exception {//filler for now
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("authorization", auth.authToken());
         makeRequest("DELETE", "/session", null, null, hashMap);
@@ -58,7 +58,11 @@ public class ServerFacade {
         request.put("gameID", game.gameID());
         makeRequest("PUT", "/game", request, null, hashMap);
     }
-    //logout, createGame, listGames, joinGame
+
+    public AuthData clear() throws Exception {
+        return makeRequest("DELETE", "/db", null, null, null);
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, HashMap<String, String> hashMap) throws Exception {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
@@ -75,7 +79,8 @@ public class ServerFacade {
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (Exception ex) {
-            throw new Exception("Error code: 500" + ex.getMessage());
+            //throw new Exception("Error code: 500" + ex.getMessage());
+            throw new Exception(ex.getMessage());
         }
     }
 
@@ -93,12 +98,25 @@ public class ServerFacade {
     private void throwIfNotSuccessful(HttpURLConnection http) throws Exception {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
-            try (InputStream respErr = http.getErrorStream()) {
-                if (respErr != null) {
-                    throw new Exception(String.valueOf(respErr));
+            switch(status) {
+                case 400 -> {
+                    throw new Exception("Error: bad request");
+                }
+                case 401 -> {
+                    throw new Exception("Error: unauthorized");
+                }
+                case 403 -> {
+                    throw new Exception("Error: already taken");
+                }
+                default -> {
+                    try (InputStream respErr = http.getErrorStream()) {
+                        if (respErr != null) {
+                            throw new Exception(String.valueOf(respErr));
+                        }
+                    }
+                    throw new Exception("other failure: " + status);
                 }
             }
-            throw new Exception("other failure: " + status);
         }
     }
 

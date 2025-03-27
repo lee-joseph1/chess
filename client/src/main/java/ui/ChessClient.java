@@ -44,8 +44,8 @@ public class ChessClient {
                     System.out.println("registering new user");
                     if (args.length != 3) {
                         System.out.println(RED + "please input a username, pasword, and email");
-                        return "error registering - bad input";
-                        //throw new Exception("Error: bad input for register");
+                        //return "error registering - bad input";
+                        throw new Exception("Error: bad input for register");
                     } else {
                         auth = facade.register(args);
                         state = State.SIGNEDIN;
@@ -58,7 +58,7 @@ public class ChessClient {
                         //return "error logging in - bad input";
                         throw new Exception("Error: bad input for login");
                     } else {
-                        auth = facade.Login(args);
+                        auth = facade.login(args);
                         state = State.SIGNEDIN;
                         return "user " + auth.username() + " logged in";
                     }
@@ -66,20 +66,19 @@ public class ChessClient {
             }
         }
         else {
-            //help, create, join, list, logout
             switch (cmd) {
                 case "help" -> {
                     System.out.println(RED + "logout " + RESET + " - log out");
                     System.out.println(RED + "create " + YELLOW + "<GAME_NAME> " + RESET + " - create a new chess game");
                     System.out.println(RED + "list" + RESET + " - list current games");
                     System.out.println(RED + "join" + YELLOW + "<GAME_NUMBER> [WHITE|BLACK]" + RESET + " - join game as selected color");
-                    System.out.println(RED + "observe" + YELLOW + "<GAME_NUMBER> " + RESET + " - quit");
+                    System.out.println(RED + "observe" + YELLOW + "<GAME_NUMBER> " + RESET + " - watch a game");
                     System.out.println(RED + "quit" + RESET + " - quit");
                     System.out.println(RED + "help" + RESET + " - list available commands");
                     return "";
                 }
                 case "logout" -> {
-                    facade.Logout(auth);
+                    facade.logout(auth);
                     state = State.SIGNEDOUT;
                     return "user " + auth.username() + " logged out";
                 }
@@ -90,12 +89,12 @@ public class ChessClient {
                         throw new Exception("Error: bad input for login");
                     }
                     GameData game = facade.create(auth, args[0]);
-                    return "game " + game.gameName() + " created";
+                    return "game created";
                 }
                 case "list" -> {
                     ListResponse2 gameList = facade.list(auth);
-                    for (int i = 1; i < gameList.games().size(); i++) {
-                        chessGames.put(i, gameList.games().get(i-1));
+                    for (int i = 0; i < gameList.games().size(); i++) {
+                        chessGames.put(i+1, gameList.games().get(i));
                     }
                     for (HashMap.Entry<Integer, GameData> item : chessGames.entrySet()){
                         GameData game = item.getValue();
@@ -154,6 +153,6 @@ public class ChessClient {
                 }
             }
         }
-        return null;
+        return "";
     }
 }
