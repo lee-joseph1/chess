@@ -1,13 +1,18 @@
 package ui;
 
+import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import server.ServerFacade;
+import server.ListResponse2;
+
+import java.util.HashMap;
 
 public class ChessClient {
     private final ServerFacade facade;
     public State state = State.SIGNEDOUT;
     private AuthData auth;
+    private HashMap<Integer, GameData> chessGames = new HashMap<>();
 
     public ChessClient(String serverURL) {
         facade = new ServerFacade(serverURL);
@@ -49,8 +54,8 @@ public class ChessClient {
                 case "login" -> {
                     if (args.length != 2) {
                         System.out.println(RED + "please input a username and password");
-                        return "error logging in - bad input";
-                        //throw new Exception("Error: bad input for login");
+                        //return "error logging in - bad input";
+                        throw new Exception("Error: bad input for login");
                     } else {
                         auth = facade.Login(args);
                         state = State.SIGNEDIN;
@@ -70,7 +75,7 @@ public class ChessClient {
                     System.out.println(RED + "observe" + YELLOW + "<GAME_NUMBER> " + RESET + " - quit");
                     System.out.println(RED + "quit" + RESET + " - quit");
                     System.out.println(RED + "help" + RESET + " - list available commands");
-                    return "helped.";
+                    return "";
                 }
                 case "logout" -> {
                     facade.Logout(auth);
@@ -80,11 +85,22 @@ public class ChessClient {
                 case "create" -> {
                     if (args.length != 1) {
                         System.out.println(RED + "please choose a game name");
-                        return "error creating game - bad input";
-                        //throw new Exception("Error: bad input for login");
+                        //return "error creating game - bad input";
+                        throw new Exception("Error: bad input for login");
                     }
                     GameData game = facade.create(auth, args[0]);
                     return "game " + game.gameName() + " created";
+                }
+                case "list" -> {
+                    ListResponse2 gameList = facade.listGames(auth);
+                    for (int i = 1; i < gameList.games().size(); i++) {
+                        chessGames.put(i, gameList.games().get(i-1));
+                    }
+                    for (HashMap.Entry<Integer, GameData> item : chessGames.entrySet()){
+                        GameData game = item.getValue();
+                        return RED + item.getKey() + ": " + game.gameName() + " WHITE: " +
+                                game.whiteUsername() + ", BLACK: " + game.blackUsername();
+                    }
                 }
             }
         }

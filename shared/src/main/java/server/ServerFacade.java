@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import server.ListResponse2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +46,11 @@ public class ServerFacade {
         return makeRequest("POST", path, game, GameData.class, games);
     }
 
+    public ListResponse2 listGames(AuthData auth) throws Exception {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("authorization", auth.authToken());
+        return makeRequest("GET", "/game", null, ListResponse2.class, hashMap);
+    }
 
     //logout, createGame, listGames, joinGame
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, HashMap<String, String> hashMap) throws Exception {
