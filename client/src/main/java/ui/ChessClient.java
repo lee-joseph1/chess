@@ -124,11 +124,14 @@ public class ChessClient {
                         throw new Exception("Error: please choose a valid color, in caps");
                     }
                     facade.join(auth, args, chessGames);
+                    GameData game = chessGames.get(Integer.parseInt(args[0]));
                     if (args[1].equals("WHITE")) {
-                        System.out.println("print board from white here");
+                        //System.out.println("print board from white here");
+                        Draw.drawBoardWhite();
                         return "";
                     } else if (args[1].equals("BLACK")) {
-                        System.out.println("print board from black here");
+                        //System.out.println("print board from black here");
+                        Draw.drawBoardBlack();
                         return "";
                     }
                 }
@@ -149,7 +152,12 @@ public class ChessClient {
                     } catch (Exception ex) {
                         throw new Exception("Error: bad input for observe");
                     }
-                    return "< imagine fetching selected game & printing from white here >";
+                    for (int i = 1; i < gameList.games().size(); i++) {
+                        chessGames.put(i, gameList.games().get(i-1));
+                    }
+                    GameData game = chessGames.get(Integer.parseInt(args[0]));
+                    Draw.drawBoardWhite();
+                    //return "< imagine fetching selected game & printing from white here >";
                 }
             }
         }
