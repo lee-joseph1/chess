@@ -27,14 +27,15 @@ public class ServerFacadeTests {
     }
 
     @AfterAll
-    static void stopServer() {
+    static void stopServer() throws Exception {
+        facade.clear();
         server.stop();
     }
 
 
     @Test
     public void registerPass() throws Exception {
-        String[] args = new String[]{"username", "password", "email"};
+        String[] args = new String[]{"username1", "password1", "email1"};
         AuthData authData = facade.register(args);
         assertNotNull(authData.authToken());
     }
@@ -46,10 +47,10 @@ public class ServerFacadeTests {
 
     @Test
     public void loginPass() throws Exception {
-        String[] args = new String[]{"username", "password", "email"};
+        String[] args = new String[]{"username2", "password2", "email2"};
         AuthData authData = facade.register(args);
         facade.logout(authData);
-        AuthData auth = facade.login(new String[]{"username", "password"});
+        AuthData auth = facade.login(new String[]{"username2", "password2"});
         assertNotNull(auth.authToken());
     }
 
@@ -60,10 +61,10 @@ public class ServerFacadeTests {
 
     @Test
     public void logoutPass() throws Exception {
-        String[] args = new String[]{"username", "password", "email"};
+        String[] args = new String[]{"username3", "password3", "email3"};
         AuthData authData = facade.register(args);
         facade.logout(authData);
-        assertThrows(Exception.class, () -> {facade.create(authData, "no");});
+        assertThrows(Exception.class, () -> {facade.create(authData, "no3");});
     }
 
     @Test
@@ -73,11 +74,11 @@ public class ServerFacadeTests {
 
     @Test
     public void createPass() throws Exception {
-        String[] args = new String[]{"username", "password", "email"};
+        String[] args = new String[]{"username4", "password4", "email4"};
         AuthData authData = facade.register(args);
         facade.logout(authData);
-        AuthData auth = facade.login(new String[]{"username", "password"});
-        GameData game = facade.create(auth, "gameName");
+        AuthData auth = facade.login(new String[]{"username4", "password4"});
+        GameData game = facade.create(auth, "gameName4");
         assertNotNull(game);
     }
 
@@ -88,11 +89,11 @@ public class ServerFacadeTests {
 
     @Test
     public void listPass() throws Exception {
-        String[] args = new String[]{"username", "password", "email"};
+        String[] args = new String[]{"username5", "password5", "email5"};
         AuthData authData = facade.register(args);
         facade.logout(authData);
-        AuthData auth = facade.login(new String[]{"username", "password"});
-        facade.create(auth, "gameName");
+        AuthData auth = facade.login(new String[]{"username5", "password5"});
+        facade.create(auth, "gameName5");
         assertFalse(facade.list(auth).games().isEmpty());
     }
 
@@ -103,11 +104,11 @@ public class ServerFacadeTests {
 
     @Test
     public void joinPass() throws Exception {
-        String[] args = new String[]{"username", "password", "email"};
+        String[] args = new String[]{"username6", "password6", "email6"};
         AuthData authData = facade.register(args);
         facade.logout(authData);
-        AuthData auth = facade.login(new String[]{"username", "password"});
-        GameData game = facade.create(auth, "gameName");
+        AuthData auth = facade.login(new String[]{"username6", "password6"});
+        GameData game = facade.create(auth, "gameName6");
         HashMap<Integer, GameData> chessGames = new HashMap<>();
         chessGames.put(1, game);
         facade.join(auth, new String[]{"1", "WHITE"}, chessGames);
