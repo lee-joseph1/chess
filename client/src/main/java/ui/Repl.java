@@ -34,8 +34,8 @@ public class Repl {
                 String result = client.findCommand(line);
                 System.out.println(result);
             } catch (Throwable e) {
-                var msg = e.toString();
-                System.out.print(msg);
+                //var msg = e.toString();
+                System.out.println(e.getMessage());
             }
         }
         System.out.println();

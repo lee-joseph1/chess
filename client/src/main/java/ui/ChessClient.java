@@ -7,6 +7,7 @@ import server.ServerFacade;
 import server.ListResponse2;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ChessClient {
     private final ServerFacade facade;
@@ -92,14 +93,44 @@ public class ChessClient {
                     return "game " + game.gameName() + " created";
                 }
                 case "list" -> {
-                    ListResponse2 gameList = facade.listGames(auth);
+                    ListResponse2 gameList = facade.list(auth);
                     for (int i = 1; i < gameList.games().size(); i++) {
                         chessGames.put(i, gameList.games().get(i-1));
                     }
                     for (HashMap.Entry<Integer, GameData> item : chessGames.entrySet()){
                         GameData game = item.getValue();
-                        return RED + item.getKey() + ": " + game.gameName() + " WHITE: " +
-                                game.whiteUsername() + ", BLACK: " + game.blackUsername();
+                        System.out.println(item.getKey() + ": " + game.gameName() + " WHITE: " +
+                                game.whiteUsername() + ", BLACK: " + game.blackUsername());
+                    }
+                    return "";
+                }
+                case "join" -> {
+                    if (args.length != 2) {
+                        System.out.println(RED + "please choose a game and color");
+                        //return "error creating game - bad input";
+                        throw new Exception("Error: bad input for join");
+                    }
+                    ListResponse2 gameList = facade.list(auth);
+                    for (int i = 1; i < gameList.games().size(); i++) {
+                        chessGames.put(i, gameList.games().get(i-1));
+                    } //need to fetch all games again in most recent state
+                    try {
+                        if (Integer.parseInt(args[0]) < 1 || Integer.parseInt(args[0]) > chessGames.size()) {
+                            throw new Exception("Error: invalid game number");
+                        }
+                    } catch (Exception ex) {
+                        throw new Exception("Error: bad input for join");
+                    }
+                    if ((!Objects.equals(args[1], "WHITE")) && (!Objects.equals(args[1], "BLACK"))) {
+                        throw new Exception("Error: please choose a valid color, in caps");
+                    }
+                    facade.join(auth, args, chessGames);
+                    if (args[1].equals("WHITE")) {
+                        System.out.println("print board from white here");
+                        return "";
+                    } else if (args[1].equals("BLACK")) {
+                        System.out.println("print board from black here");
+                        return "";
                     }
                 }
             }

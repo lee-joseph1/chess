@@ -2,12 +2,9 @@ package server;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import server.ListResponse2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
 import java.util.HashMap;
-import java.util.Map;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -46,12 +42,22 @@ public class ServerFacade {
         return makeRequest("POST", path, game, GameData.class, games);
     }
 
-    public ListResponse2 listGames(AuthData auth) throws Exception {
+    public ListResponse2 list(AuthData auth) throws Exception {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("authorization", auth.authToken());
         return makeRequest("GET", "/game", null, ListResponse2.class, hashMap);
     }
 
+    public void join(AuthData auth, String[] args, HashMap<Integer, GameData> chessGames) throws Exception {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("authorization", auth.authToken());
+        int number = Integer.parseInt(args[0]);
+        GameData game = chessGames.get(number);
+        HashMap<String, Object> request = new HashMap<>();
+        request.put("playerColor", args[1]);
+        request.put("gameID", game.gameID());
+        makeRequest("PUT", "/game", request, null, hashMap);
+    }
     //logout, createGame, listGames, joinGame
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, HashMap<String, String> hashMap) throws Exception {
         try {
