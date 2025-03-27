@@ -98,24 +98,28 @@ public class ServerFacade {
     private void throwIfNotSuccessful(HttpURLConnection http) throws Exception {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
-            switch(status) {
-                case 400 -> {
-                    throw new Exception("Error: bad request");
-                }
-                case 401 -> {
-                    throw new Exception("Error: unauthorized");
-                }
-                case 403 -> {
-                    throw new Exception("Error: already taken");
-                }
-                default -> {
-                    try (InputStream respErr = http.getErrorStream()) {
-                        if (respErr != null) {
-                            throw new Exception(String.valueOf(respErr));
-                        }
+            statusCases(http, status);
+        }
+    }
+
+    private static void statusCases(HttpURLConnection http, int status) throws Exception {
+        switch(status) {
+            case 400 -> {
+                throw new Exception("Error: bad request");
+            }
+            case 401 -> {
+                throw new Exception("Error: unauthorized");
+            }
+            case 403 -> {
+                throw new Exception("Error: already taken");
+            }
+            default -> {
+                try (InputStream respErr = http.getErrorStream()) {
+                    if (respErr != null) {
+                        throw new Exception(String.valueOf(respErr));
                     }
-                    throw new Exception("other failure: " + status);
                 }
+                throw new Exception("other failure: " + status);
             }
         }
     }
