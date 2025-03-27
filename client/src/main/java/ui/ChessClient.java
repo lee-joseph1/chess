@@ -27,23 +27,23 @@ public class ChessClient {
     }
 
     public String eval(String cmd, String[] args) throws Exception {
-        String RED = EscapeSequences.SET_TEXT_COLOR_RED;
-        String YELLOW = EscapeSequences.SET_TEXT_COLOR_YELLOW;
-        String RESET = EscapeSequences.RESET_TEXT_COLOR;
+        String console = EscapeSequences.SET_TEXT_COLOR_CONSOLE;
+        String highlight = EscapeSequences.SET_TEXT_COLOR_HIGHLIGHT;
+        String base = EscapeSequences.SET_TEXT_COLOR_BASE;
         if (state == State.SIGNEDOUT) {
             //help, register, login
             switch (cmd) {
                 case "help" -> {
-                    System.out.println(RED + "register " + YELLOW + "<USERNAME> <PASSWORD> <EMAIL>" + RESET + " - create an account");
-                    System.out.println(RED + "login " + YELLOW + "<USERNAME> <PASSWORD>" + RESET + " - login to existing account");
-                    System.out.println(RED + "quit" + RESET + " - quit");
-                    System.out.println(RED + "help" + RESET + " - list available commands");
+                    System.out.println(console + "register " + highlight + "<USERNAME> <PASSWORD> <EMAIL>" + base + " - create an account");
+                    System.out.println(console + "login " + highlight + "<USERNAME> <PASSWORD>" + base + " - login to existing account");
+                    System.out.println(console + "quit" + base + " - quit");
+                    System.out.println(console + "help" + base + " - list available commands");
                     return "helped.";
                 }
                 case "register" -> {
                     System.out.println("registering new user");
                     if (args.length != 3) {
-                        System.out.println(RED + "please input a username, pasword, and email");
+                        System.out.println(console + "please input a username, pasword, and email");
                         //return "error registering - bad input";
                         throw new Exception("Error: bad input for register");
                     } else {
@@ -54,7 +54,7 @@ public class ChessClient {
                 }
                 case "login" -> {
                     if (args.length != 2) {
-                        System.out.println(RED + "please input a username and password");
+                        System.out.println(console + "please input a username and password");
                         //return "error logging in - bad input";
                         throw new Exception("Error: bad input for login");
                     } else {
@@ -68,13 +68,13 @@ public class ChessClient {
         else {
             switch (cmd) {
                 case "help" -> {
-                    System.out.println(RED + "logout " + RESET + " - log out");
-                    System.out.println(RED + "create " + YELLOW + "<GAME_NAME> " + RESET + " - create a new chess game");
-                    System.out.println(RED + "list" + RESET + " - list current games");
-                    System.out.println(RED + "join" + YELLOW + "<GAME_NUMBER> [WHITE|BLACK]" + RESET + " - join game as selected color");
-                    System.out.println(RED + "observe" + YELLOW + "<GAME_NUMBER> " + RESET + " - watch a game");
-                    System.out.println(RED + "quit" + RESET + " - quit");
-                    System.out.println(RED + "help" + RESET + " - list available commands");
+                    System.out.println(console + "logout " + base + " - log out");
+                    System.out.println(console + "create " + highlight + "<GAME_NAME> " + base + " - create a new chess game");
+                    System.out.println(console + "list" + base + " - list current games");
+                    System.out.println(console + "join" + highlight + "<GAME_NUMBER> [WHITE|BLACK]" + base + " - join game as selected color");
+                    System.out.println(console + "observe" + highlight + "<GAME_NUMBER> " + base + " - watch a game");
+                    System.out.println(console + "quit" + base + " - quit");
+                    System.out.println(console + "help" + base + " - list available commands");
                     return "";
                 }
                 case "logout" -> {
@@ -84,7 +84,7 @@ public class ChessClient {
                 }
                 case "create" -> {
                     if (args.length != 1) {
-                        System.out.println(RED + "please choose a game name");
+                        System.out.println(console + "please choose a game name");
                         //return "error creating game - bad input";
                         throw new Exception("Error: bad input for login");
                     }
@@ -105,7 +105,7 @@ public class ChessClient {
                 }
                 case "join" -> {
                     if (args.length != 2) {
-                        System.out.println(RED + "please choose a game and color");
+                        System.out.println(console + "please choose a game and color");
                         //return "error creating game - bad input";
                         throw new Exception("Error: bad input for join");
                     }
@@ -137,7 +137,7 @@ public class ChessClient {
                 }
                 case "observe" -> {
                     if (args.length != 1) {
-                        System.out.println(RED + "please choose a game");
+                        System.out.println(console + "please choose a game");
                         //return "error creating game - bad input";
                         throw new Exception("Error: bad input for observe");
                     }

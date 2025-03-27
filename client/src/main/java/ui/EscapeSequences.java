@@ -54,6 +54,9 @@ public class EscapeSequences {
     public static final String SET_TEXT_COLOR_WHITE = "\u001b[38;2;245;245;255m";
     public static final String SET_TEXT_COLOR_BLACK = "\u001b[38;2;20;20;25m";
     public static final String SET_TEXT_COLOR_LABEL = "\u001b[38;2;120;90;70m";
+    public static final String SET_TEXT_COLOR_CONSOLE = "\u001b[38;2;200;85;40m";
+    public static final String SET_TEXT_COLOR_HIGHLIGHT = "\u001b[38;2;120;90;70m";
+    public static final String SET_TEXT_COLOR_BASE = "\u001b[38;2;130;140;135m";
 
     public static final String WHITE_KING = SET_TEXT_COLOR_WHITE + " ♔ ";
     public static final String WHITE_QUEEN = SET_TEXT_COLOR_WHITE + " ♕ ";
