@@ -1,6 +1,7 @@
 package ui;
 
 import model.AuthData;
+import model.GameData;
 import server.ServerFacade;
 
 public class ChessClient {
@@ -75,6 +76,15 @@ public class ChessClient {
                     facade.Logout(auth);
                     state = State.SIGNEDOUT;
                     return "user " + auth.username() + " logged out";
+                }
+                case "create" -> {
+                    if (args.length != 1) {
+                        System.out.println(RED + "please choose a game name");
+                        return "error creating game - bad input";
+                        //throw new Exception("Error: bad input for login");
+                    }
+                    GameData game = facade.create(auth, args[0]);
+                    return "game " + game.gameName() + " created";
                 }
             }
         }

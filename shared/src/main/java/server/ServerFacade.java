@@ -1,9 +1,11 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -29,18 +32,31 @@ public class ServerFacade {
     }
 
     public void Logout(AuthData auth) throws Exception {//filler for now
-        makeRequest("DELETE", "/session", null, null, auth);
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("authorization", auth.authToken());
+        makeRequest("DELETE", "/session", null, null, hashMap);
     }
 
+    public GameData create(AuthData auth, String gameName) throws Exception {
+        HashMap<String, String> games = new HashMap<>();
+        games.put("authorization", auth.authToken());
+        GameData game = new GameData(0, null, null, gameName, new ChessGame());
+        var path = "/game";
+        return makeRequest("POST", path, game, GameData.class, games);
+    }
+
+
     //logout, createGame, listGames, joinGame
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, AuthData auth) throws Exception {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, HashMap<String, String> hashMap) throws Exception {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-            if (auth != null) {
-                http.setRequestProperty("authorization", auth.authToken());
+            if (hashMap != null) {
+                for (HashMap.Entry<String, String> arg : hashMap.entrySet()) {
+                    http.setRequestProperty(arg.getKey(), arg.getValue());
+                }
             }
             writeBody(request, http);
             http.connect();
